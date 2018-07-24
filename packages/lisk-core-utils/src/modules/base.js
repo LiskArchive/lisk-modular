@@ -1,0 +1,44 @@
+'use strict';
+
+let packageInfos = new WeakMap();
+
+module.exports = class Base {
+	/**
+	 * Represent an abstract module of lisk ecosystem
+	 * @param {String} moduleName
+	 * @param {object} options
+	 * @param {loadAsProcess} options.loadAsProcess
+	 */
+	constructor(moduleName, options) {
+		console.log(`Bootstrapping module ${moduleName}`);
+		const pkg = this.loadModulePackage(moduleName);
+		this.name = moduleName;
+		this.alias = pkg.alias;
+		this.version = pkg.pkg.version;
+		this.events = pkg.events;
+		this.actions = pkg.actions;
+		this.pkg = pkg.pkg;
+		this.options = options;
+
+		// Setup channel in child constructors
+		this.channel = null;
+
+		packageInfos.set(this, pkg);
+	}
+
+	establishChannel(){
+		throw 'Implement this method in child class.'
+	}
+
+	loadModulePackage(name) {
+		return require(`../../../../modules/${name}`);
+	}
+
+	async load() {
+		await packageInfos.get(this).load(this.channel, this.options);
+	}
+
+	async unload(channel, options) {
+		await packageInfos.get(this).unload(channel, options);
+	}
+};

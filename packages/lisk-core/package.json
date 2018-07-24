@@ -1,0 +1,17 @@
+{
+  "name": "@lisk-core/core",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@lisk-core/utils": "^1.0.0",
+    "axon": "^2.0.3",
+    "bluebird": "^3.5.1",
+    "commander": "^2.16.0",
+    "eventemitter2": "^5.0.1"
+  }
+}
