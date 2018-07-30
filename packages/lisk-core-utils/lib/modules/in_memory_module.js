@@ -12,12 +12,13 @@ module.exports = class InMemoryModule extends BaseModule {
 
 	async load(){
 		console.log(`Loading module with alias: ${this.alias}(${this.version})`);
-		await this.establishChannel();
-		await super.load();
+		this.channel = new EventEmitterChannel(this, this.bus, {});
+
+		await this.channel.registerToBus();
+		await this.getPackageSpecs().load(this.channel, this.options);
 	}
 
-	async establishChannel(){
-		this.channel = new EventEmitterChannel(this, this.bus, {});
-		await this.channel.registerToBus();
+	async unload() {
+		await this.getPackageSpecs().unload();
 	}
 };

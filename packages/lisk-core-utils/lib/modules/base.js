@@ -1,6 +1,8 @@
 'use strict';
 
-let packageInfo = new WeakMap();
+const packageSpecs = new WeakMap();
+
+const loadModulePackage = name => require(`../../../../modules/${name}`);
 
 module.exports = class Base {
 	/**
@@ -11,7 +13,7 @@ module.exports = class Base {
 	 */
 	constructor(moduleName, options) {
 		console.log(`Bootstrapping module ${moduleName}`);
-		const pkg = this.loadModulePackage(moduleName);
+		const pkg = loadModulePackage(moduleName);
 		this.name = moduleName;
 		this.alias = pkg.alias;
 		this.version = pkg.pkg.version;
@@ -23,22 +25,22 @@ module.exports = class Base {
 		// Setup channel in child constructors
 		this.channel = null;
 
-		packageInfo.set(this, pkg);
+		packageSpecs.set(this, pkg);
 	}
 
 	establishChannel(){
 		throw 'Implement this method in child class.'
 	}
 
-	loadModulePackage(name) {
-		return require(`../../../../modules/${name}`);
-	}
-
 	async load() {
-		await packageInfo.get(this).load(this.channel, this.options);
+		throw 'Implement this method in child class.';
 	}
 
 	async unload(channel, options) {
-		await packageInfo.get(this).unload(channel, options);
+		throw 'Implement this method in child class.';
+	}
+
+	getPackageSpecs() {
+		return packageSpecs.get(this);
 	}
 };
