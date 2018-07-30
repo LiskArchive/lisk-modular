@@ -50,7 +50,7 @@ module.exports = class Bus extends EventEmitter2 {
 	async invoke(actionName, params, cb) {
 		if(this.actions[actionName]) {
 			const moduleAlias = actionName.split(':').shift();
-			return await this.controller.getModule(moduleAlias).channel.invoke(actionName, params, cb);
+			return await this.controller.getModule(moduleAlias).invoke(actionName, params, cb);
 		}
 	}
 

@@ -20,7 +20,7 @@ module.exports = class Controller {
 	}
 
 	async loadModules() {
-		const chainModule = ModuleFactory.create('in_memory', 'lisk-core-chain', {}, this, this.bus);
+		const chainModule = ModuleFactory.create('child_process', 'lisk-core-chain', {}, this, this.bus);
 		const p2p2Module = ModuleFactory.create('in_memory', 'lisk-core-p2p', {}, this, this.bus);
 
 		this.modules[chainModule.alias] = chainModule;

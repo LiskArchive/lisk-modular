@@ -22,22 +22,19 @@ module.exports = class Base {
 		this.pkg = pkg.pkg;
 		this.options = options;
 
-		// Setup channel in child constructors
-		this.channel = null;
-
 		packageSpecs.set(this, pkg);
 	}
 
 	establishChannel(){
-		throw 'Implement this method in child class.'
+		throw new TypeError('Implement this method in child class.');
 	}
 
 	async load() {
-		throw 'Implement this method in child class.';
+		throw new TypeError('Implement this method in child class.');
 	}
 
 	async unload(channel, options) {
-		throw 'Implement this method in child class.';
+		throw new TypeError('Implement this method in child class.');
 	}
 
 	getPackageSpecs() {

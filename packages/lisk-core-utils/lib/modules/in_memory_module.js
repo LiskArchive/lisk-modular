@@ -7,6 +7,7 @@ module.exports = class InMemoryModule extends BaseModule {
 
 	constructor(moduleName, options={}, bus){
 		super(moduleName, options);
+		this.type = 'in_memory';
 		this.bus = bus;
 	}
 
@@ -20,5 +21,9 @@ module.exports = class InMemoryModule extends BaseModule {
 
 	async unload() {
 		await this.getPackageSpecs().unload();
+	}
+
+	async invoke(actionName, params) {
+		return this.channel.invoke(actionName, params);
 	}
 };
