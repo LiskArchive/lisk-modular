@@ -1,5 +1,5 @@
 {
-  "name": "@lisk-core/p2p",
+  "name": "@lisk/core-p2p",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lisk-core/utils": "^1.0.0"
+    "@lisk/core-utils": "^1.0.0"
   }
 }

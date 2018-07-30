@@ -9,29 +9,33 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 		this.bus = bus;
 		this.actionMap = {};
 	}
+
 	async registerToBus() {
-		await this.bus.registerEvents(this.events);
-		await this.bus.registerActions(this.actions);
+		await this.bus.registerEvents(this.getEvents());
+		await this.bus.registerActions(this.getActions());
 	}
 
 	subscribe(eventName, cb) {
-		super.subscribe(eventName);
+		this.isValidEventName(eventName);
+
 		this.bus.on(eventName, cb);
 	}
 
 	publish(eventName, data) {
-		super.publish(eventName);
+		this.isValidEventName(eventName);
+
 		this.bus.emit(eventName, data);
 	}
 
 	action(actionName, cb) {
 		actionName = `${this.module.alias}:${actionName}`;
-		super.action(actionName, cb);
+		this.isValidActionName(actionName);
+
 		this.actionMap[actionName] = cb;
 	}
 
 	async invoke(actionName, params) {
-		await super.invoke(actionName);
+		this.isValidActionName(actionName);
 
 		if(this.actionMap[actionName]) {
 			return await this.actionMap[actionName](params);

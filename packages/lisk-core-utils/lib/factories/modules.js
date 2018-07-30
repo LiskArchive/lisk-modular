@@ -19,7 +19,7 @@ const ModuleFactory = module.exports = {
 		if(moduleType === 'in_memory') {
 			return new moduleTypes[moduleType](moduleName, options, bus);
 		} else {
-			return new moduleTypes[moduleType](moduleName, options);
+			return new moduleTypes[moduleType](moduleName, options, bus);
 		}
 	}
 };

@@ -1,8 +1,8 @@
 'use strict';
 
-const { ModuleFactory } = require('@lisk-core/utils');
-const Bus = require('./bus');
 const Promise = require('bluebird');
+const { ModuleFactory } = require('@lisk/core-utils');
+const Bus = require('./bus');
 
 module.exports = class Controller {
 	constructor(options) {
@@ -20,8 +20,8 @@ module.exports = class Controller {
 	}
 
 	async loadModules() {
-		const chainModule = ModuleFactory.create('child_process', 'lisk-chain', {}, this, this.bus);
-		const p2p2Module = ModuleFactory.create('in_memory', 'lisk-p2p', {}, this, this.bus);
+		const chainModule = ModuleFactory.create('in_memory', 'lisk-core-chain', {}, this, this.bus);
+		const p2p2Module = ModuleFactory.create('in_memory', 'lisk-core-p2p', {}, this, this.bus);
 
 		this.modules[chainModule.alias] = chainModule;
 		this.modules[p2p2Module.alias] = p2p2Module;

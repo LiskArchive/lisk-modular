@@ -1,6 +1,6 @@
 'use strict';
 
-let packageInfos = new WeakMap();
+let packageInfo = new WeakMap();
 
 module.exports = class Base {
 	/**
@@ -23,7 +23,7 @@ module.exports = class Base {
 		// Setup channel in child constructors
 		this.channel = null;
 
-		packageInfos.set(this, pkg);
+		packageInfo.set(this, pkg);
 	}
 
 	establishChannel(){
@@ -35,10 +35,10 @@ module.exports = class Base {
 	}
 
 	async load() {
-		await packageInfos.get(this).load(this.channel, this.options);
+		await packageInfo.get(this).load(this.channel, this.options);
 	}
 
 	async unload(channel, options) {
-		await packageInfos.get(this).unload(channel, options);
+		await packageInfo.get(this).unload(channel, options);
 	}
 };

@@ -12,10 +12,6 @@ module.exports = class Bus extends EventEmitter2 {
 		this.actions = {};
 		this.events = {};
 
-		// Socket for IPC
-		this.eventSocket = axon.socket('pub');
-		this.eventSocket.bind(6000);
-
 		// Sockets for IPC actions
 		this.rpcSocket = axon.socket('rep');
 		this.rpcSocket.bind(6001);
