@@ -4,8 +4,8 @@ const BaseChannel = require('./base');
 const _ = require('lodash');
 
 module.exports = class EventEmitterChannel extends BaseChannel {
-	constructor(module, bus, options={}){
-		super(module, options);
+	constructor(moduleAlias, events, actions, bus, options = {}) {
+		super(moduleAlias, events, actions, options);
 		this.bus = bus;
 		this.actionMap = {};
 	}
@@ -28,7 +28,7 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 	}
 
 	action(actionName, cb) {
-		actionName = `${this.module.alias}:${actionName}`;
+		actionName = `${this.moduleAlias}:${actionName}`;
 		this.isValidActionName(actionName);
 
 		this.actionMap[actionName] = cb;
@@ -37,10 +37,10 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 	async invoke(actionName, params) {
 		this.isValidActionName(actionName);
 
-		if(this.actionMap[actionName]) {
+		if (this.actionMap[actionName]) {
 			return await this.actionMap[actionName](params);
-		} else {
-			return(await this.bus.invoke(actionName, params));
 		}
+
+		return (await this.bus.invoke(actionName, params));
 	}
 };
