@@ -2,6 +2,7 @@
 
 const EventEmitter2 = require('eventemitter2').EventEmitter2;
 const axon = require('axon');
+const rpc = require('axon-rpc');
 
 module.exports = class Bus extends EventEmitter2 {
 	constructor(controller, options) {
@@ -14,42 +15,38 @@ module.exports = class Bus extends EventEmitter2 {
 
 		// Sockets for IPC actions
 		this.rpcSocket = axon.socket('rep');
+		const rpcServer = new rpc.Server(this.rpcSocket);
 		this.rpcSocket.bind(6001);
 
-		this.rpcSocket.on('registerEvents', (events, reply) => {
-			this.registerEvents(events).then((data) => {
-				reply(data);
-			});
+		rpcServer.expose('registerChannel', (moduleAlias, events, actions, options, cb) => {
+			this.registerChannel(moduleAlias, events, actions).then(() => setImmediate(cb, null)).catch((error) => setImmediate(cb, error));
 		});
 
-		this.rpcSocket.on('registerActions', (events, reply) => {
-			this.registerActions(events).then((data) => {
-				reply(data);
-			});
-		})
+		rpcServer.expose('invoke', (moduleName, actionName, params, cb) => {
+			this.invoke(moduleName, actionName, params).then(() => setImmediate(cb, null)).catch(error => setImmediate(cb, error));
+		});
 	}
 
-	async registerEvents(events){
+	async registerChannel(moduleAlias, events, actions, options) {
 		events.map(e => {
-			if(this.events[e]) {
-				throw `Event "${e}" already registered with bus.`;
+			const eventName = `${moduleAlias}:${e}`;
+			if(this.events[eventName]) {
+				throw `Event "${eventName}" already registered with bus.`;
 			}
-			this.events[e] = true;
+			this.events[eventName] = true;
 		});
-	}
 
-	async registerActions(actions){
 		actions.map(a => {
-			if(this.actions[a]) {
-				throw `Action "${a}" already registered with bus.`;
+			const actionName = `${moduleAlias}:${a}`;
+			if(this.actions[actionName]) {
+				throw `Action "${actionName}" already registered with bus.`;
 			}
-			this.actions[a] = true;
+			this.actions[actionName] = true;
 		});
 	}
 
-	async invoke(actionName, params, cb) {
-		if(this.actions[actionName]) {
-			const moduleAlias = actionName.split(':').shift();
+	async invoke(moduleAlias, actionName, params, cb) {
+		if(this.actions[`${moduleAlias}:${actionName}`]) {
 			return await this.controller.getModule(moduleAlias).invoke(actionName, params, cb);
 		}
 	}

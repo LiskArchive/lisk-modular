@@ -2,6 +2,8 @@
 
 const BaseChannel = require('./base');
 const _ = require('lodash');
+const Event = require('../event');
+const Action = require('../action');
 
 module.exports = class EventEmitterChannel extends BaseChannel {
 	constructor(moduleAlias, events, actions, bus, options = {}) {
@@ -11,36 +13,36 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 	}
 
 	async registerToBus() {
-		await this.bus.registerEvents(this.getEvents());
-		await this.bus.registerActions(this.getActions());
+		await this.bus.registerChannel(
+			this.moduleAlias,
+			this.getEvents().map(e => e.name),
+			this.getActions().map(a => a.name), {});
 	}
 
 	subscribe(eventName, cb) {
-		this.isValidEventName(eventName);
+		const event = new Event(eventName);
 
-		this.bus.on(eventName, cb);
+		this.bus.on(event.toEmitterName(), cb);
 	}
 
 	publish(eventName, data) {
-		this.isValidEventName(eventName);
+		const event = new Event(eventName, data);
 
-		this.bus.emit(eventName, data);
+		this.bus.emit(event.toEmitterName(), event.data);
 	}
 
 	action(actionName, cb) {
-		actionName = `${this.moduleAlias}:${actionName}`;
-		this.isValidActionName(actionName);
-
-		this.actionMap[actionName] = cb;
+		const action = new Action(actionName, null, this.moduleAlias);
+		this.actionMap[action.name] = cb;
 	}
 
 	async invoke(actionName, params) {
-		this.isValidActionName(actionName);
+		const action = new Action(actionName, params, this.moduleAlias);
 
-		if (this.actionMap[actionName]) {
-			return await this.actionMap[actionName](params);
+		if (action.module === this.moduleAlias) {
+			return await this.actionMap[action.name](action.params);
 		}
 
-		return (await this.bus.invoke(actionName, params));
+		return (await this.bus.invoke(action.module, action.name, params));
 	}
 };

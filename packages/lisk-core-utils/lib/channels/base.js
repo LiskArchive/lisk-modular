@@ -1,5 +1,7 @@
 'use strict';
 
+const Event = require('../event');
+const Action = require('../action');
 const AsyncFunction = (async () => {
 }).constructor;
 const eventsList = new WeakMap();
@@ -10,21 +12,8 @@ module.exports = class Base {
 		this.moduleAlias = moduleAlias;
 		this.options = options;
 
-		eventsList.set(this, events.map(e => {
-			const eventName = `${this.moduleAlias}:${e}`;
-			if (!this.isValidEventName(eventName)) {
-				throw `Invalid event name "${eventName}"`;
-			}
-			return eventName;
-		}));
-
-		actionsList.set(this, actions.map(a => {
-			const actionName = `${this.moduleAlias}:${a}`;
-			if (!this.isValidActionName(actionName)) {
-				throw `Invalid action name "${actionName}"`;
-			}
-			return actionName;
-		}));
+		eventsList.set(this, events.map(e => new Event(e, null, this.moduleAlias)));
+		actionsList.set(this, actions.map(a => new Action(a, null, this.moduleAlias)));
 	}
 
 	getActions() {
@@ -79,23 +68,4 @@ module.exports = class Base {
 		}
 		return result;
 	}
-
-	isValidActionParams(actionName, cb, throwError = true) {
-
-		let result = this.getActions().includes(actionName);
-
-		// Check action is in spec
-		if (throwError && !result) {
-			throw `[${this.moduleAlias.alias}] Invalid action name ${actionName}. Its not specified in module spec.`
-		}
-
-		// Check action callback is an async function
-		result = (cb instanceof AsyncFunction === true);
-		if (throwError && !result) {
-			throw `[${this.moduleAlias.alias}] Action ${actionName} callback must be async function.`
-		}
-
-		return result;
-	}
-
 };
