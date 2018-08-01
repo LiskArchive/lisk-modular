@@ -51,7 +51,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 	}
 
 	// This method will be called from the forked process only
-	static forkProcess(moduleName, moduleOptions){
+	static async forkProcess(moduleName, moduleOptions){
 		if(cluster.isMaster) {
 			throw 'You can\'t call this method on master process.';
 			process.exit(1);
@@ -72,12 +72,10 @@ module.exports = class ChildProcessModule extends BaseModule {
 
 		process.title = `${modulePackage.alias} (${modulePackage.pkg.version})`;
 
-		const channel = new ChildProcessChannel(modulePackage, null, {});
+		const channel = new ChildProcessChannel(modulePackage.alias, modulePackage.events, modulePackage.actions, {});
+		await channel.registerToBus();
+		await modulePackage.getPackageSpecs().load(channel, moduleOptions);
 
-		channel.registerToBus().then(() => {
-			return modulePackage.getPackageSpecs().load(channel, moduleOptions);
-		}).then(() => {
-			console.log(`Child process for ${modulePackage.alias} (${modulePackage.pkg.version}) loaded...`);
-		});
+		console.log(`Child process for ${modulePackage.alias} (${modulePackage.pkg.version}) loaded...`);
 	}
 };

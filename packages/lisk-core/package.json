@@ -10,6 +10,7 @@
   "dependencies": {
     "@lisk/core-utils": "^1.0.0",
     "axon": "^2.0.3",
+    "axon-rpc": "^0.0.3",
     "bluebird": "^3.5.1",
     "commander": "^2.16.0",
     "eventemitter2": "^5.0.1"

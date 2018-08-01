@@ -6,8 +6,8 @@ const axon = require('axon');
 const Promise = require('bluebird');
 
 module.exports = class ChildProcessChannel extends BaseChannel {
-	constructor(module, options={}){
-		super(module, options);
+	constructor(moduleAlias, events, actions, options={}){
+		super(moduleAlias, events, actions, options);
 
 		this.actionMap = {};
 		this.eventsMap = {};
@@ -15,7 +15,6 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 
 	async registerToBus() {
 		process.on('message', (data) => {
-			console.log(this.eventsMap[data.eventName], data.eventName, data.eventData);
 			return setImmediate(this.eventsMap[data.eventName], data.eventData);
 		});
 	}
@@ -32,14 +31,14 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 	}
 
 	action(actionName, cb) {
-		actionName = `${this.module.alias}:${actionName}`;
+		actionName = `${this.moduleAlias.alias}:${actionName}`;
 		this.isValidActionName(actionName);
 
 		this.actionMap[actionName] = cb;
 	}
 
 	async invoke(actionName, params) {
-		console.log(`[channel] [invoke] [${actionName}] ${this.module.alias} `);
+		console.log(`[channel] [invoke] [${actionName}] ${this.moduleAlias.alias} `);
 		this.isValidActionName(actionName);
 
 		if(this.actionMap[actionName]) {
