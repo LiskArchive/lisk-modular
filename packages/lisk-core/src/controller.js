@@ -26,8 +26,8 @@ module.exports = class Controller {
 		this.modules[chainModule.alias] = chainModule;
 		this.modules[p2p2Module.alias] = p2p2Module;
 
-		await Promise.map(Object.keys(this.modules), async (m) => {
-			await this.modules[m].load();
+		await Promise.map(Object.keys(this.modules), (m) => {
+			return this.modules[m].load();
 		});
 
 		console.info(`Bus listening to events: ${this.bus.getEvents()}`);

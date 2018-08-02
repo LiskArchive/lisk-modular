@@ -2,7 +2,10 @@
 
 const path = require('path');
 const cluster = require('cluster');
+const homeDir = require('os').homedir();
 const Promise = require('bluebird');
+const axon = require('axon');
+const rpc = require('axon-rpc');
 const BaseModule = require('./base');
 const ChildProcessChannel = require('../channels/child_process');
 const childProcessLoaderPath = path.resolve(__dirname, '../loaders/child_process');
@@ -37,17 +40,43 @@ module.exports = class ChildProcessModule extends BaseModule {
 			});
 		});
 
-		this.childProcess.on('message', (data) => {
-			this.bus.emit(data.eventName, data.eventData);
-		});
+		this.rpcClient = null;
 
 		return new Promise((resolve, reject) => {
-			this.childProcess.on('online', resolve);
-		}).timeout(5000).bind(this);
+			this.childProcess.once('message', (data) => {
+				if(data === 'ready') {
+					this.childProcess.removeAllListeners('message');
+
+					// Register event handler
+					this.childProcess.on('message', (data) => {
+						this.bus.emit(data.eventName, data.eventData);
+					});
+
+
+					// Create socket for module
+					const moduleSocket = axon.socket('req');
+					const moduleSocketPath = `${homeDir}/.lisk-core/sockets/${this.alias}_rpc.sock`;
+					this.rpcClient = new rpc.Client(moduleSocket);
+					moduleSocket.connect(`unix://${moduleSocketPath}`);
+
+					return setImmediate(resolve);
+				} else {
+					return setImmediate(reject, new Error('Child process sent some other event than ready.'));
+				}
+			});
+		}).timeout(5000).then(() => {
+			console.log(`Ready module with alias: ${this.alias}(${this.version})`);
+		});
 	}
 
 	async invoke(actionName, params) {
-		return {error: false};
+		return new Promise((resolve, reject) => {
+			this.rpcClient.call('invoke', actionName, params, (err, result)=> {
+				if(err) return setImmediate(reject, err);
+
+				return setImmediate(resolve, result);
+			});
+		})
 	}
 
 	// This method will be called from the forked process only
@@ -57,25 +86,14 @@ module.exports = class ChildProcessModule extends BaseModule {
 			process.exit(1);
 		}
 
-		const busProxy = {
-			registerEvents: async (events) => {
-
-			},
-			registerActions: async (actions) => {
-
-			}
-		};
-
 		const modulePackage = new BaseModule(moduleName, moduleOptions);
-
-		console.log(`Loading child process for ${modulePackage.alias}(${modulePackage.pkg.version})...`);
 
 		process.title = `${modulePackage.alias} (${modulePackage.pkg.version})`;
 
 		const channel = new ChildProcessChannel(modulePackage.alias, modulePackage.events, modulePackage.actions, {});
 		await channel.registerToBus();
-		await modulePackage.getPackageSpecs().load(channel, moduleOptions);
-
-		console.log(`Child process for ${modulePackage.alias} (${modulePackage.pkg.version}) loaded...`);
+		await modulePackage.getPackageSpecs().load(channel, moduleOptions).then(() => {
+			process.send('ready');
+		});
 	}
 };

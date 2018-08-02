@@ -1,6 +1,9 @@
 'use strict';
 
 const EventEmitter2 = require('eventemitter2').EventEmitter2;
+const fs = require('fs-extra');
+const path = require('path');
+const homeDir = require('os').homedir();
 const axon = require('axon');
 const rpc = require('axon-rpc');
 
@@ -14,16 +17,18 @@ module.exports = class Bus extends EventEmitter2 {
 		this.events = {};
 
 		// Sockets for IPC actions
-		this.rpcSocket = axon.socket('rep');
-		const rpcServer = new rpc.Server(this.rpcSocket);
-		this.rpcSocket.bind(6001);
+		const rpcSocketPath = `${homeDir}/.lisk-core/sockets/bus_rpc.sock`;
+		fs.ensureDirSync(path.dirname(rpcSocketPath));
+		const rpcSocket = axon.socket('rep');
+		this.rpcServer = new rpc.Server(rpcSocket);
+		rpcSocket.bind(`unix://${rpcSocketPath}`);
 
-		rpcServer.expose('registerChannel', (moduleAlias, events, actions, options, cb) => {
+		this.rpcServer.expose('registerChannel', (moduleAlias, events, actions, options, cb) => {
 			this.registerChannel(moduleAlias, events, actions).then(() => setImmediate(cb, null)).catch((error) => setImmediate(cb, error));
 		});
 
-		rpcServer.expose('invoke', (moduleName, actionName, params, cb) => {
-			this.invoke(moduleName, actionName, params).then(() => setImmediate(cb, null)).catch(error => setImmediate(cb, error));
+		this.rpcServer.expose('invoke', (moduleName, actionName, params, cb) => {
+			this.invoke(moduleName, actionName, params).then((data) => setImmediate(cb, null, data)).catch(error => setImmediate(cb, error));
 		});
 	}
 

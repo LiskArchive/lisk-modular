@@ -17,6 +17,7 @@ module.exports = class InMemoryModule extends BaseModule {
 
 		await this.channel.registerToBus();
 		await this.getPackageSpecs().load(this.channel, this.options);
+		console.log(`Ready module with alias: ${this.alias}(${this.version})`);
 	}
 
 	async unload() {
