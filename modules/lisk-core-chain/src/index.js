@@ -41,8 +41,6 @@ module.exports = {
 			}
 
 		}, 2000);
-
-		console.log('Module chain loaded...');
 	},
 	async unload (controller, options) {
 	}

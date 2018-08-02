@@ -7,6 +7,7 @@ const Bus = require('./bus');
 module.exports = class Controller {
 	constructor(options) {
 		console.log('Initializing controller');
+		this.config = options;
 		this.modules = {};
 
 		// Setting up bus
@@ -20,12 +21,12 @@ module.exports = class Controller {
 	}
 
 	async loadModules() {
-		const chainModule = ModuleFactory.create('child_process', 'lisk-core-chain', {}, this, this.bus);
-		const p2p2Module = ModuleFactory.create('in_memory', 'lisk-core-p2p', {}, this, this.bus);
-
-		this.modules[chainModule.alias] = chainModule;
-		this.modules[p2p2Module.alias] = p2p2Module;
-
+		Object.keys(this.config.modules).map(moduleName => {
+			const moduleConfig = this.config.modules[moduleName];
+			const module = ModuleFactory.create(moduleConfig.loadAs, moduleName, moduleConfig, this, this.bus);
+			this.modules[module.alias] = module;
+		});
+		
 		await Promise.map(Object.keys(this.modules), (m) => {
 			return this.modules[m].load();
 		});

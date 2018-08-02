@@ -1,6 +1,4 @@
 'use strict';
-
-const path = require('path');
 const Controller = require('./controller');
 const pkg = require('../package');
 
@@ -8,7 +6,7 @@ const pkg = require('../package');
 let ctrl = null;
 
 module.exports = {
-	start: async (options) => {
+	start: async (options = {}) => {
 		console.log('Starting lisk...');
 		if(ctrl) {
 			console.error('Controller is already started...');
@@ -16,7 +14,8 @@ module.exports = {
 		}
 
 		setProcessTitle();
-		ctrl = new Controller(options);
+		const defaultConfig = require('../config/config.json');
+		ctrl = new Controller(Object.assign({}, options, defaultConfig));
 		await ctrl.loadModules();
 	}
 };

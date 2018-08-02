@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const app = require('commander');
-const CLI = require('../src/cli');
+const CLI = require('../lib/cli');
 
 app
 	.command('start')
