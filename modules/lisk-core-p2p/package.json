@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lisk/core-utils": "^1.0.0"
+    "@lisk/core-utils": "^1.0.0",
+    "@lisk/lisk-logger-bunyan": "^1.0.0"
   }
 }

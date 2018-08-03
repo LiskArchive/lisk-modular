@@ -8,5 +8,12 @@
       "loadAs": "child_process",
       "option1": ""
     }
+  },
+  "components": {
+    "logger": {
+      "filename": "logs/lisk.log",
+      "fileLogLevel": "debug",
+      "consoleLogLevel": "debug"
+    }
   }
 }

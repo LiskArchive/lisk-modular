@@ -2,5 +2,6 @@
 
 module.exports = {
 	ChannelFactory: require('./factories/channels'),
-	ModuleFactory: require('./factories/modules')
+	ModuleFactory: require('./factories/modules'),
+	ComponentFactory: require('./factories/components')
 };

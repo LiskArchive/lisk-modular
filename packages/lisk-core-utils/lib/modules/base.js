@@ -11,8 +11,8 @@ module.exports = class Base {
 	 * @param {object} options
 	 * @param {loadAsProcess} options.loadAsProcess
 	 */
-	constructor(moduleName, options) {
-		console.log(`Bootstrapping module ${moduleName}`);
+	constructor(moduleName, options, logger) {
+		logger.info(`Bootstrapping module ${moduleName}`);
 		const pkg = loadModulePackage(moduleName);
 		this.name = moduleName;
 		this.alias = pkg.alias;
@@ -21,6 +21,7 @@ module.exports = class Base {
 		this.actions = pkg.actions;
 		this.pkg = pkg.pkg;
 		this.options = options;
+		this.logger = logger;
 
 		packageSpecs.set(this, pkg);
 	}

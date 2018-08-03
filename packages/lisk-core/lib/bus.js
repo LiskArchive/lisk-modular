@@ -51,8 +51,12 @@ module.exports = class Bus extends EventEmitter2 {
 	}
 
 	async invoke(moduleAlias, actionName, params, cb) {
-		if(this.actions[`${moduleAlias}:${actionName}`]) {
-			return await this.controller.getModule(moduleAlias).invoke(actionName, params, cb);
+		if(moduleAlias === 'lisk') {
+			return this.controller.channel.invoke(actionName, params);
+		} else {
+			if(this.actions[`${moduleAlias}:${actionName}`]) {
+				return this.controller.getModule(moduleAlias).invoke(actionName, params, cb);
+			}
 		}
 	}
 

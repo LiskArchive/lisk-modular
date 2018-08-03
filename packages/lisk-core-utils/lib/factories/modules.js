@@ -11,16 +11,12 @@ const ModuleFactory = module.exports = {
 		moduleTypes[moduleType] = moduleClass;
 	},
 
-	create: (moduleType, moduleName, options={}, controller=null, bus=null) => {
+	create: (moduleType, moduleName, options={}, logger=null, bus=null) => {
 		if (!moduleTypes[moduleType]) {
 			throw new TypeError(`Module type "${moduleType}" not registered.`);
 		}
 
-		if(moduleType === 'in_memory') {
-			return new moduleTypes[moduleType](moduleName, options, bus);
-		} else {
-			return new moduleTypes[moduleType](moduleName, options, bus);
-		}
+		return new moduleTypes[moduleType](moduleName, options, logger, bus);
 	}
 };
 

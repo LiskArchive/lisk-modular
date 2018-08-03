@@ -1,5 +1,5 @@
 {
-  "name": "@lisk/core-utils",
+  "name": "@lisk/lisk-logger-bunyan",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
@@ -9,9 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@lisk/lisk-logger-bunyan": "^1.0.0",
-    "axon": "^2.0.3",
-    "axon-rpc": "^0.0.3",
-    "bluebird": "^3.5.1"
+    "bunyan": "^1.8.12"
+  },
+  "config": {
+    "default": {
+      "filename": "logs/lisk.log",
+      "fileLogLevel": "debug",
+      "consoleLogLevel": "debug"
+    }
   }
 }

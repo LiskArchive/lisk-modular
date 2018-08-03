@@ -12,14 +12,14 @@ const childProcessLoaderPath = path.resolve(__dirname, '../loaders/child_process
 
 module.exports = class ChildProcessModule extends BaseModule {
 
-	constructor(moduleName, options={}, bus){
-		super(moduleName, options);
+	constructor(moduleName, options={}, logger, bus){
+		super(moduleName, options, logger);
 		this.bus = bus;
 		this.type = 'child_process';
 	}
 
 	async load(){
-		console.log(`Loading module with alias: ${this.alias}(${this.version})`);
+		this.logger.info(`Loading module with alias: ${this.alias}(${this.version})`);
 		cluster.setupMaster({
 			cwd: process.cwd(),
 			stdio: [process.stdin, process.stdout, process.stderr, 'ipc'],
@@ -65,7 +65,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 				}
 			});
 		}).timeout(5000).then(() => {
-			console.log(`Ready module with alias: ${this.alias}(${this.version})`);
+			this.logger.info(`Ready module with alias: ${this.alias}(${this.version})`);
 		});
 	}
 
@@ -86,13 +86,13 @@ module.exports = class ChildProcessModule extends BaseModule {
 			process.exit(1);
 		}
 
-		const modulePackage = new BaseModule(moduleName, moduleOptions);
+		const modulePackage = require(`../../../../modules/${moduleName}`);
 
 		process.title = `${modulePackage.alias} (${modulePackage.pkg.version})`;
 
 		const channel = new ChildProcessChannel(modulePackage.alias, modulePackage.events, modulePackage.actions, {});
 		await channel.registerToBus();
-		await modulePackage.getPackageSpecs().load(channel, moduleOptions).then(() => {
+		await modulePackage.load(channel, moduleOptions).then(() => {
 			process.send('ready');
 		});
 	}

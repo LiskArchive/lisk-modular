@@ -13,9 +13,12 @@ module.exports = {
 	],
 	async load (channel, options) {
 
+		const loggerConfig = await channel.invoke('lisk:getComponentConfig', 'logger');
+		const logger = require('@lisk/lisk-logger-bunyan')(loggerConfig).child({identifier: 'p2p'});
+
 		// Subscribe to event
 		channel.subscribe('p2p:newPeer', (peer) => {
-			console.log('[p2p] event - p2p2:newPeer', peer);
+			logger.info('Event - p2p2:newPeer', peer);
 		});
 
 		// Register actions
@@ -38,7 +41,7 @@ module.exports = {
 			if(result && !result.error) {
 				channel.publish('chain:newTransaction', transaction);
 			} else {
-				console.error('[p2p] Transaction verification failed....')
+				logger.error('Transaction verification failed....')
 			}
 
 		}, 2000);

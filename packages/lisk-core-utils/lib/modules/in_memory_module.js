@@ -5,19 +5,19 @@ const EventEmitterChannel = require('../channels/event_emitter');
 
 module.exports = class InMemoryModule extends BaseModule {
 
-	constructor(moduleName, options={}, bus){
-		super(moduleName, options);
+	constructor(moduleName, options={}, logger, bus){
+		super(moduleName, options, logger);
 		this.type = 'in_memory';
 		this.bus = bus;
 	}
 
 	async load(){
-		console.log(`Loading module with alias: ${this.alias}(${this.version})`);
+		this.logger.info(`Loading module with alias: ${this.alias}(${this.version})`);
 		this.channel = new EventEmitterChannel(this.alias, this.events, this.actions, this.bus, {});
 
 		await this.channel.registerToBus();
 		await this.getPackageSpecs().load(this.channel, this.options);
-		console.log(`Ready module with alias: ${this.alias}(${this.version})`);
+		this.logger.info(`Ready module with alias: ${this.alias}(${this.version})`);
 	}
 
 	async unload() {
