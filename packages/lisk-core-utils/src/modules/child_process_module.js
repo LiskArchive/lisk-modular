@@ -52,7 +52,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 
 					// Register event handler
 					this.childProcess.on('message', data2 => {
-						this.bus.emit(data.eventName, data2.eventData);
+						this.bus.emit(data2.eventName, data2.eventData);
 					});
 
 					// Create socket for module
