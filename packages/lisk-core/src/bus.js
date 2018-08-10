@@ -1,11 +1,10 @@
-'use strict';
 
-const EventEmitter2 = require('eventemitter2').EventEmitter2;
-const fs = require('fs-extra');
 const path = require('path');
 const homeDir = require('os').homedir();
 const axon = require('axon');
 const rpc = require('axon-rpc');
+const fs = require('fs-extra');
+const { EventEmitter2 } = require('eventemitter2');
 
 module.exports = class Bus extends EventEmitter2 {
 	constructor(controller, options) {
@@ -23,41 +22,48 @@ module.exports = class Bus extends EventEmitter2 {
 		this.rpcServer = new rpc.Server(rpcSocket);
 		rpcSocket.bind(`unix://${rpcSocketPath}`);
 
-		this.rpcServer.expose('registerChannel', (moduleAlias, events, actions, options, cb) => {
-			this.registerChannel(moduleAlias, events, actions).then(() => setImmediate(cb, null)).catch((error) => setImmediate(cb, error));
+		this.rpcServer.expose('registerChannel',
+			(moduleAlias, events, actions, moduleOptions, cb) => {
+				this.registerChannel(moduleAlias, events, actions, moduleOptions)
+					.then(() => setImmediate(cb, null))
+					.catch(error => setImmediate(cb, error));
 		});
 
 		this.rpcServer.expose('invoke', (moduleName, actionName, params, cb) => {
-			this.invoke(moduleName, actionName, params).then((data) => setImmediate(cb, null, data)).catch(error => setImmediate(cb, error));
+			this.invoke(moduleName, actionName, params)
+				.then(data => setImmediate(cb, null, data))
+				.catch(error => setImmediate(cb, error));
 		});
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	async registerChannel(moduleAlias, events, actions, options) {
-		events.map(e => {
+		events.forEach(e => {
 			const eventName = `${moduleAlias}:${e}`;
-			if(this.events[eventName]) {
-				throw `Event "${eventName}" already registered with bus.`;
+			if (this.events[eventName]) {
+				throw new Error(`Event "${eventName}" already registered with bus.`);
 			}
 			this.events[eventName] = true;
 		});
 
-		actions.map(a => {
+		actions.forEach(a => {
 			const actionName = `${moduleAlias}:${a}`;
-			if(this.actions[actionName]) {
-				throw `Action "${actionName}" already registered with bus.`;
+			if (this.actions[actionName]) {
+				throw new Error(`Action "${actionName}" already registered with bus.`);
 			}
 			this.actions[actionName] = true;
 		});
 	}
 
 	async invoke(moduleAlias, actionName, params, cb) {
-		if(moduleAlias === 'lisk') {
+		if (moduleAlias === 'lisk') {
 			return this.controller.channel.invoke(actionName, params);
-		} else {
-			if(this.actions[`${moduleAlias}:${actionName}`]) {
-				return this.controller.getModule(moduleAlias).invoke(actionName, params, cb);
-			}
 		}
+
+		if (this.actions[`${moduleAlias}:${actionName}`]) {
+			return this.controller.getModule(moduleAlias).invoke(actionName, params, cb);
+		}
+			throw new Error(`Action ${moduleAlias}:${actionName} is not registered to bus.`);
 	}
 
 	getActions() {

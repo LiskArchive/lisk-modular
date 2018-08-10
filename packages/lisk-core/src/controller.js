@@ -1,9 +1,10 @@
-'use strict';
+
 
 const Promise = require('bluebird');
 const { ModuleFactory, ComponentFactory } = require('@lisk/core-utils');
-const EventEmitterChannel = require('@lisk/core-utils/lib/channels/event_emitter');
+const EventEmitterChannel = require('@lisk/core-utils/src/channels/event_emitter');
 const Bus = require('./bus');
+
 const logger = ComponentFactory.create('logger');
 
 module.exports = class Controller {
@@ -14,11 +15,11 @@ module.exports = class Controller {
 		this.channel = null;
 
 		// Setting up bus
-		if(!this.bus) {
+		if (!this.bus) {
 			this.bus = new Bus(this, {
 				wildcard: true,
 				delimiter: ':',
-				maxListeners: 1000
+				maxListeners: 1000,
 			});
 		}
 	}
@@ -27,7 +28,7 @@ module.exports = class Controller {
 		await this.establishChannel();
 		await this.loadModules();
 
-		logger.info('Bus listening to events',this.bus.getEvents());
+		logger.info('Bus listening to events', this.bus.getEvents());
 		logger.info('Bus ready for actions', this.bus.getActions());
 	}
 
@@ -38,27 +39,28 @@ module.exports = class Controller {
 	async establishChannel() {
 		this.channel = new EventEmitterChannel(
 			'lisk', [
-				'ready'
+				'ready',
 			], [
-				'getComponentConfig'
+				'getComponentConfig',
 			], this.bus, {});
 
 		await this.channel.registerToBus();
 
-		this.channel.action('getComponentConfig', async (component) => {
-			return this.config.components[component];
-		});
+		this.channel.action('getComponentConfig', async component => this.config.components[component]);
 	}
 
 	async loadModules() {
-		Object.keys(this.config.modules).map(moduleName => {
+		Object.keys(this.config.modules).forEach(moduleName => {
 			const moduleConfig = this.config.modules[moduleName];
-			const module = ModuleFactory.create(moduleConfig.loadAs, moduleName, moduleConfig, logger, this.bus);
+			const module = ModuleFactory.create(
+				moduleConfig.loadAs,
+				moduleName,
+				moduleConfig,
+				logger,
+				this.bus);
 			this.modules[module.alias] = module;
 		});
 
-		await Promise.map(Object.keys(this.modules), (m) => {
-			return this.modules[m].load();
-		});
+		await Promise.map(Object.keys(this.modules), m => this.modules[m].load());
 	}
 };

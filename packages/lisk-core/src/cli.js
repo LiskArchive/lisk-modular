@@ -1,20 +1,22 @@
-'use strict';
+
+const { ComponentFactory } = require('@lisk/core-utils');
 const pkg = require('../package');
 const config = require('../config/config.json');
-const { ComponentFactory } = require('@lisk/core-utils');
-
-ComponentFactory.register('logger', require('@lisk/lisk-logger-bunyan'));
-
 const Controller = require('./controller');
+ComponentFactory.register('logger', require('@lisk/lisk-logger-bunyan'));
 
 const logger = ComponentFactory.create('logger', config.components.logger);
 
 let ctrl = null;
 
+const setProcessTitle = () => {
+	process.title = `Lisk ${pkg.version} : (${process.cwd()})`;
+};
+
 module.exports = {
 	start: async (options = {}) => {
 		logger.info('Starting lisk...');
-		if(ctrl) {
+		if (ctrl) {
 			logger.error('Controller is already started...');
 			return;
 		}
@@ -22,9 +24,5 @@ module.exports = {
 		setProcessTitle();
 		ctrl = new Controller(Object.assign({}, options, config));
 		await ctrl.load();
-	}
-};
-
-const setProcessTitle = () => {
-	process.title = `Lisk ${pkg.version} : (${process.cwd()})`;
+	},
 };
