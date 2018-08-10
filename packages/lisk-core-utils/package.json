@@ -1,17 +1,74 @@
 {
   "name": "@lisk/core-utils",
   "version": "1.0.0",
-  "description": "",
-  "main": "lib/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Lisk Core Utilities",
+  "author": "Lisk Foundation <admin@lisk.io>, lightcurve GmbH <admin@lightcurve.io>",
+  "license": "GPL-3.0",
+  "keywords": [
+    "lisk",
+    "blockchain",
+    "utils"
+  ],
+  "homepage": "https://github.com/LiskHQ/lisk-modular#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiskHQ/lisk-modular.git"
   },
-  "author": "",
-  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LiskHQ/lisk-modular/issues"
+  },
+  "engines": {
+    "node": ">=6.14.1 <=8.11.3",
+    "npm": ">=3.10.10 <=5.6.0"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,json,md}\"",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "check:dependencies": "snyk protect",
+    "test": "NODE_ENV=test nyc mocha",
+    "test:watch": "npm test -- --watch",
+    "test:watch:min": "npm run test:watch -- --reporter=min",
+    "cover": "if [ -z $JENKINS_HOME ]; then npm run cover:local; else npm run cover:ci; fi",
+    "cover:base": "NODE_ENV=test nyc report",
+    "cover:local": "npm run cover:base -- --reporter=html --reporter=text",
+    "cover:ci": "npm run cover:base -- --reporter=text-lcov | coveralls -v",
+    "precommit": "lint-staged",
+    "prepush": "npm run lint && npm test && npm run check:dependencies",
+    "prepublishOnly": "rm -r ./node_modules && npm install && npm run prepush && npm run build",
+    "postinstall": "npm run check:dependencies"
+  },
   "dependencies": {
     "@lisk/lisk-logger-bunyan": "^1.0.0",
     "axon": "^2.0.3",
     "axon-rpc": "^0.0.3",
-    "bluebird": "^3.5.1"
+    "babel-runtime": "6.26.0",
+    "bluebird": "^3.5.1",
+    "debug": "3.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-plugin-istanbul": "4.1.5",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "chai": "4.1.2",
+    "chai-as-promised": "7.1.1",
+    "coveralls": "3.0.0",
+    "eslint": "4.16.0",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-config-lisk-base": "1.0.0",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-mocha": "4.11.0",
+    "husky": "0.14.3",
+    "lint-staged": "5.0.0",
+    "mocha": "4.0.1",
+    "mocha-bdd": "0.1.2",
+    "nyc": "11.3.0",
+    "prettier": "1.8.2",
+    "sinon": "4.1.2",
+    "sinon-chai": "2.14.0",
+    "snyk": "1.73.0"
   }
 }
