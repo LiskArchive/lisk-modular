@@ -1,5 +1,42 @@
 {
+	"name": "lisk-core-monorepo",
+	"private": true,
+	"version": "0.0.0",
+	"description": "Reusable packages for use with the Lisk Core",
+	"author": "Lisk Foundation <admin@lisk.io>, lightcurve GmbH <admin@lightcurve.io>",
+	"license": "GPL-3.0",
+	"keywords": [
+		"lisk",
+		"blockchain"
+	],
+	"homepage": "https://github.com/LiskHQ/lisk-modular#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/LiskHQ/lisk-modular.git"
+	},
+	"bugs": {
+		"url": "https://github.com/LiskHQ/lisk-modular/issues"
+	},
+	"engines": {
+		"node": ">=6.3 <=9.5",
+		"npm": ">=3 <=5"
+	},
+	"scripts": {
+		"bootstrap": "lerna bootstrap",
+		"clean": "lerna run clean",
+		"clean:node_modules": "lerna clean",
+		"format": "lerna run format",
+		"lint": "lerna run lint",
+		"lint:fix": "lerna run lint:fix",
+		"test": "lerna run test",
+		"cover": "lerna run cover",
+		"precommit": "lint-staged && npm run lint",
+		"prepush": "npm run lint && npm test"
+	},
 	"devDependencies": {
-		"lerna": "^2.11.0"
+		"husky": "0.14.3",
+		"lerna": "^2.11.0",
+		"lint-staged": "4.2.3",
+		"prettier": "1.12.1"
 	}
 }
