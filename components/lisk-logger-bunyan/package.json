@@ -34,8 +34,6 @@
     "cover:base": "NODE_ENV=test nyc report",
     "cover:local": "npm run cover:base -- --reporter=html --reporter=text",
     "cover:ci": "npm run cover:base -- --reporter=text-lcov | coveralls -v",
-    "precommit": "lint-staged",
-    "prepush": "npm run lint && npm test && npm run check:dependencies",
     "prepublishOnly": "rm -r ./node_modules && npm install && npm run prepush && npm run build",
     "postinstall": "npm run check:dependencies"
   },
