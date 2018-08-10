@@ -1,4 +1,3 @@
-
 const { ComponentFactory } = require('@lisk/core-utils');
 const pkg = require('../package');
 const config = require('../config/config.json');

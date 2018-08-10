@@ -1,19 +1,19 @@
 {
-  "modules": {
-    "lisk-core-chain": {
-      "loadAs": "child_process",
-      "option1": ""
-    },
-    "lisk-core-p2p": {
-      "loadAs": "child_process",
-      "option1": ""
-    }
-  },
-  "components": {
-    "logger": {
-      "filename": "logs/lisk.log",
-      "fileLogLevel": "debug",
-      "consoleLogLevel": "debug"
-    }
-  }
+	"modules": {
+		"lisk-core-chain": {
+			"loadAs": "child_process",
+			"option1": ""
+		},
+		"lisk-core-p2p": {
+			"loadAs": "child_process",
+			"option1": ""
+		}
+	},
+	"components": {
+		"logger": {
+			"filename": "logs/lisk.log",
+			"fileLogLevel": "debug",
+			"consoleLogLevel": "debug"
+		}
+	}
 }

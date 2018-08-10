@@ -1,4 +1,3 @@
-
 const path = require('path');
 const homeDir = require('os').homedir();
 const axon = require('axon');
@@ -22,12 +21,14 @@ module.exports = class Bus extends EventEmitter2 {
 		this.rpcServer = new rpc.Server(rpcSocket);
 		rpcSocket.bind(`unix://${rpcSocketPath}`);
 
-		this.rpcServer.expose('registerChannel',
+		this.rpcServer.expose(
+			'registerChannel',
 			(moduleAlias, events, actions, moduleOptions, cb) => {
 				this.registerChannel(moduleAlias, events, actions, moduleOptions)
 					.then(() => setImmediate(cb, null))
 					.catch(error => setImmediate(cb, error));
-		});
+			},
+		);
 
 		this.rpcServer.expose('invoke', (moduleName, actionName, params, cb) => {
 			this.invoke(moduleName, actionName, params)
@@ -61,9 +62,13 @@ module.exports = class Bus extends EventEmitter2 {
 		}
 
 		if (this.actions[`${moduleAlias}:${actionName}`]) {
-			return this.controller.getModule(moduleAlias).invoke(actionName, params, cb);
+			return this.controller
+				.getModule(moduleAlias)
+				.invoke(actionName, params, cb);
 		}
-			throw new Error(`Action ${moduleAlias}:${actionName} is not registered to bus.`);
+		throw new Error(
+			`Action ${moduleAlias}:${actionName} is not registered to bus.`,
+		);
 	}
 
 	getActions() {

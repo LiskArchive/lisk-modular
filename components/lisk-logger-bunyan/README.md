@@ -53,8 +53,8 @@ steps:
 1. Clone the repository.
 1. Reinitialise git (by removing the `.git` directory, running `git init` and
 	committing everything into the initial commit).
-1. Find and replace all instances of `lisk-logger-bunyan2` with your project name
-	(assuming the name of your project is the same as its GitHub namespace).
+1. Find and replace all instances of `lisk-logger-bunyan2` with your project
+	name (assuming the name of your project is the same as its GitHub namespace).
 1. Commit these customization changes.
 1. Run `npm install`.
 
@@ -166,8 +166,8 @@ the following:
 1. Update your GitHub project settings to allow Jenkins to submit information.
 1. Set up the main Jenkins project, the private project, and the private nightly
 	project in the `nightly-builds` folder.
-1. Add a Coveralls configuration file at `~/.coveralls.yml-lisk-logger-bunyan2` on all
-	Jenkins nodes that will be used to build lisk-logger-bunyan2.
+1. Add a Coveralls configuration file at `~/.coveralls.yml-lisk-logger-bunyan2`
+	on all Jenkins nodes that will be used to build lisk-logger-bunyan2.
 
 ## Miscellaneous information
 

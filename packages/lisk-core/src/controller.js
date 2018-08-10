@@ -1,5 +1,3 @@
-
-
 const Promise = require('bluebird');
 const { ModuleFactory, ComponentFactory } = require('@lisk/core-utils');
 const EventEmitterChannel = require('@lisk/core-utils/src/channels/event_emitter');
@@ -38,15 +36,19 @@ module.exports = class Controller {
 
 	async establishChannel() {
 		this.channel = new EventEmitterChannel(
-			'lisk', [
-				'ready',
-			], [
-				'getComponentConfig',
-			], this.bus, {});
+			'lisk',
+			['ready'],
+			['getComponentConfig'],
+			this.bus,
+			{},
+		);
 
 		await this.channel.registerToBus();
 
-		this.channel.action('getComponentConfig', async component => this.config.components[component]);
+		this.channel.action(
+			'getComponentConfig',
+			async component => this.config.components[component],
+		);
 	}
 
 	async loadModules() {
@@ -57,7 +59,8 @@ module.exports = class Controller {
 				moduleName,
 				moduleConfig,
 				logger,
-				this.bus);
+				this.bus,
+			);
 			this.modules[module.alias] = module;
 		});
 
