@@ -1,4 +1,4 @@
-'use strict';
+
 
 /*
  * Copyright © 2018 Lisk Foundation
@@ -17,7 +17,6 @@
 const fs = require('fs');
 const path = require('path');
 const bunyan = require('bunyan');
-
 const defaultLoggerConfig = require('../package.json').config.default;
 
 const createDirIfNotExists = filename => {
@@ -32,11 +31,7 @@ const createDirIfNotExists = filename => {
 
 const shouldShowSrc = level => level === 'debug' || level === 'trace';
 
-const createLogger = ({
-						  filename,
-						  level: fileLogLevel,
-						  consoleLogLevel,
-					  } = defaultLoggerConfig) => {
+const createLogger = ({ filename, level: fileLogLevel, consoleLogLevel } = defaultLoggerConfig) => {
 	const fileLevel = fileLogLevel !== 'none' ? fileLogLevel : 'fatal';
 	createDirIfNotExists(filename);
 	const streams = [
