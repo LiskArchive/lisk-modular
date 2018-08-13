@@ -2,8 +2,8 @@ const homeDir = require('os').homedir();
 const axon = require('axon');
 const rpc = require('axon-rpc');
 const Promise = require('bluebird');
-const Event = require('../event');
 const Action = require('../action');
+const Event = require('../event');
 const BaseChannel = require('./base');
 
 module.exports = class ChildProcessChannel extends BaseChannel {
@@ -55,9 +55,7 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 	}
 
 	subscribe(eventName, cb) {
-		this.eventsMap[(new Event(eventName)).key()] = (data) => {
-			return setImmediate(cb, Event.deserialize(data));
-		};
+		this.eventsMap[new Event(eventName).key()] = data => setImmediate(cb, Event.deserialize(data));
 	}
 
 	publish(eventName, data) {
@@ -75,11 +73,11 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 		let action = null;
 
 		// Invoked by user module
-		if(typeof actionName === 'string') {
+		if (typeof actionName === 'string') {
 			action = new Action(actionName, params, this.moduleAlias);
 
 			// Invoked by bus to preserve the source
-		} else if(typeof actionName === 'object') {
+		} else if (typeof actionName === 'object') {
 			action = Action.deserialize(actionName);
 		}
 
@@ -88,16 +86,13 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 		}
 
 		return new Promise((resolve, reject) => {
-			this.busRpcClient.call(
-				'invoke', action.serialize(),
-				(err, data) => {
-					if (err) {
-						return setImmediate(reject, err);
-					}
+			this.busRpcClient.call('invoke', action.serialize(), (err, data) => {
+				if (err) {
+					return setImmediate(reject, err);
+				}
 
-					return setImmediate(resolve, data);
-				},
-			);
+				return setImmediate(resolve, data);
+			});
 		});
 	}
 };

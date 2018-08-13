@@ -5,8 +5,8 @@ const Promise = require('bluebird');
 const axon = require('axon');
 const rpc = require('axon-rpc');
 const ChildProcessChannel = require('../channels/child_process');
-const BaseModule = require('./base');
 const Event = require('../event');
+const BaseModule = require('./base');
 
 const childProcessLoaderPath = path.resolve(
 	__dirname,

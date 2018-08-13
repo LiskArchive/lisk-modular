@@ -4,4 +4,10 @@ const ComponentFactory = require('./factories/components');
 const Event = require('./event');
 const Action = require('./action');
 
-module.exports = { ChannelFactory, ModuleFactory, ComponentFactory, Event, Action };
+module.exports = {
+	ChannelFactory,
+	ModuleFactory,
+	ComponentFactory,
+	Event,
+	Action,
+};

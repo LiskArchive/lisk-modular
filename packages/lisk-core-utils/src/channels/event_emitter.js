@@ -19,9 +19,7 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 	}
 
 	subscribe(eventName, cb) {
-		this.bus.on((new Event(eventName)).key(), (data) => {
-			return setImmediate(cb, Event.deserialize(data));
-		});
+		this.bus.on(new Event(eventName).key(), data => setImmediate(cb, Event.deserialize(data)));
 	}
 
 	publish(eventName, data) {
@@ -39,11 +37,11 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 		let action = null;
 
 		// Invoked by user module
-		if(typeof actionName === 'string') {
+		if (typeof actionName === 'string') {
 			action = new Action(actionName, params, this.moduleAlias);
 
-		// Invoked by bus to preserve the source
-		} else if(typeof actionName === 'object') {
+			// Invoked by bus to preserve the source
+		} else if (typeof actionName === 'object') {
 			action = actionName;
 		}
 

@@ -65,14 +65,10 @@ module.exports = class Bus extends EventEmitter2 {
 		}
 
 		if (this.actions[action.key()]) {
-			return this.controller
-				.getModule(action.module)
-				.invoke(action);
+			return this.controller.getModule(action.module).invoke(action);
 		}
 
-		throw new Error(
-			`Action ${action.key()} is not registered to bus.`,
-		);
+		throw new Error(`Action ${action.key()} is not registered to bus.`);
 	}
 
 	getActions() {

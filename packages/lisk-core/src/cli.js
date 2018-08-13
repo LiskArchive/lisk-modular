@@ -1,8 +1,9 @@
 const { ComponentFactory } = require('@lisk/core-utils');
 const pkg = require('../package');
-const config = require('../config/config.json');
+const config = require('../config/config.json'); // eslint-disable-line import/order
 
 ComponentFactory.register('logger', require('@lisk/lisk-logger-bunyan'));
+
 const logger = ComponentFactory.create('logger', config.components.logger);
 
 const Controller = require('./controller');
