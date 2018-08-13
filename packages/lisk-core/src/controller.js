@@ -47,7 +47,7 @@ module.exports = class Controller {
 
 		this.channel.action(
 			'getComponentConfig',
-			async component => this.config.components[component],
+			async action => this.config.components[action.params],
 		);
 	}
 

@@ -29,7 +29,7 @@ module.exports = class InMemoryModule extends BaseModule {
 		await this.getPackageSpecs().unload();
 	}
 
-	async invoke(actionName, params) {
-		return this.channel.invoke(actionName, params);
+	async invoke(action) {
+		return this.channel.invoke(action);
 	}
 };

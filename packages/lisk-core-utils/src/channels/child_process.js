@@ -22,8 +22,8 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 		this.rpcServer = new rpc.Server(rpcSocket);
 		rpcSocket.bind(`unix://${rpcSocketPath}`);
 
-		this.rpcServer.expose('invoke', (actionName, params, cb) => {
-			this.invoke(actionName, params)
+		this.rpcServer.expose('invoke', (action, cb) => {
+			this.invoke(action)
 				.then(result => setImmediate(cb, null, result))
 				.catch(error => setImmediate(cb, error));
 		});
@@ -67,22 +67,29 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 	}
 
 	action(actionName, cb) {
-		const action = new Action(actionName, null, this.moduleAlias);
-
-		this.actionMap[action.name] = cb;
+		const action = new Action(`${this.moduleAlias}:${actionName}`, null, null);
+		this.actionMap[action.key()] = cb;
 	}
 
 	async invoke(actionName, params) {
-		const action = new Action(actionName, params, this.moduleAlias);
-		if (action.module === this.moduleAlias) {
-			return this.actionMap[action.name](action.params);
+		let action = null;
+
+		// Invoked by user module
+		if(typeof actionName === 'string') {
+			action = new Action(actionName, params, this.moduleAlias);
+
+			// Invoked by bus to preserve the source
+		} else if(typeof actionName === 'object') {
+			action = Action.deserialize(actionName);
 		}
+
+		if (action.module === this.moduleAlias) {
+			return this.actionMap[action.key()](action);
+		}
+
 		return new Promise((resolve, reject) => {
 			this.busRpcClient.call(
-				'invoke',
-				action.module,
-				action.name,
-				params,
+				'invoke', action.serialize(),
 				(err, data) => {
 					if (err) {
 						return setImmediate(reject, err);

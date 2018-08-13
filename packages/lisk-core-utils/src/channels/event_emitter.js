@@ -31,17 +31,26 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 	}
 
 	action(actionName, cb) {
-		const action = new Action(actionName, null, this.moduleAlias);
-		this.actionMap[action.name] = cb;
+		const action = new Action(`${this.moduleAlias}:${actionName}`, null, null);
+		this.actionMap[action.key()] = cb;
 	}
 
 	async invoke(actionName, params) {
-		const action = new Action(actionName, params, this.moduleAlias);
+		let action = null;
 
-		if (action.module === this.moduleAlias) {
-			return this.actionMap[action.name](action.params);
+		// Invoked by user module
+		if(typeof actionName === 'string') {
+			action = new Action(actionName, params, this.moduleAlias);
+
+		// Invoked by bus to preserve the source
+		} else if(typeof actionName === 'object') {
+			action = actionName;
 		}
 
-		return this.bus.invoke(action.module, action.name, params);
+		if (action.module === this.moduleAlias) {
+			return this.actionMap[action.key()](action);
+		}
+
+		return this.bus.invoke(action.serialize());
 	}
 };

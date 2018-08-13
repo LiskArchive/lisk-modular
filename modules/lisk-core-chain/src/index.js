@@ -23,8 +23,9 @@ module.exports = {
 		});
 
 		// Register actions
-		channel.action('verifyTransaction', async (transaction) => {
-			if(transaction.amount % 10 < 5) {
+		channel.action('verifyTransaction', async (action) => {
+			logger.info(action.toString(), action);
+			if(action.params.amount % 10 < 5) {
 				return {error: false};
 			} else {
 				return {error: true, message: 'Very low amount'};

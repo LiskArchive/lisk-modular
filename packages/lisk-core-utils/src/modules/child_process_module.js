@@ -29,7 +29,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 			stdio: [process.stdin, process.stdout, process.stderr, 'ipc'],
 			uid: process.getuid(),
 			gid: process.getgid(),
-			execArgv: [],
+			execArgv: process.execArgv,
 			args: [`${this.name}`, JSON.stringify(this.options)],
 			exec: `${childProcessLoaderPath}`,
 		});
@@ -81,9 +81,9 @@ module.exports = class ChildProcessModule extends BaseModule {
 			});
 	}
 
-	async invoke(actionName, params) {
+	async invoke(action) {
 		return new Promise((resolve, reject) => {
-			this.rpcClient.call('invoke', actionName, params, (err, result) => {
+			this.rpcClient.call('invoke', action, (err, result) => {
 				if (err) return setImmediate(reject, err);
 
 				return setImmediate(resolve, result);

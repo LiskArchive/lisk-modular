@@ -33,7 +33,7 @@ module.exports = class Event {
 	}
 
 	toString() {
-		return `${this.source} -> ${this.module}:${this.name} ${JSON.stringify(this.data)}`;
+		return `${this.source} -> ${this.module}:${this.name}}`;
 	}
 
 	key() {

@@ -4,6 +4,7 @@ const axon = require('axon');
 const rpc = require('axon-rpc');
 const fs = require('fs-extra');
 const { EventEmitter2 } = require('eventemitter2');
+const { Action } = require('@lisk/core-utils');
 
 module.exports = class Bus extends EventEmitter2 {
 	constructor(controller, options) {
@@ -30,8 +31,8 @@ module.exports = class Bus extends EventEmitter2 {
 			},
 		);
 
-		this.rpcServer.expose('invoke', (moduleName, actionName, params, cb) => {
-			this.invoke(moduleName, actionName, params)
+		this.rpcServer.expose('invoke', (action, cb) => {
+			this.invoke(action)
 				.then(data => setImmediate(cb, null, data))
 				.catch(error => setImmediate(cb, error));
 		});
@@ -56,18 +57,21 @@ module.exports = class Bus extends EventEmitter2 {
 		});
 	}
 
-	async invoke(moduleAlias, actionName, params, cb) {
-		if (moduleAlias === 'lisk') {
-			return this.controller.channel.invoke(actionName, params);
+	invoke(actionData) {
+		const action = Action.deserialize(actionData);
+
+		if (action.module === 'lisk') {
+			return this.controller.channel.invoke(action);
 		}
 
-		if (this.actions[`${moduleAlias}:${actionName}`]) {
+		if (this.actions[action.key()]) {
 			return this.controller
-				.getModule(moduleAlias)
-				.invoke(actionName, params, cb);
+				.getModule(action.module)
+				.invoke(action);
 		}
+
 		throw new Error(
-			`Action ${moduleAlias}:${actionName} is not registered to bus.`,
+			`Action ${action.key()} is not registered to bus.`,
 		);
 	}
 

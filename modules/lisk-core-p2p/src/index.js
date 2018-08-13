@@ -22,8 +22,9 @@ module.exports = {
 		});
 
 		// Register actions
-		channel.action('verifyPeer', async (peer) => {
-			if(peer.nonce % 10 < 5) {
+		channel.action('verifyPeer', async (action) => {
+			logger.info(action.toString(), action);
+			if(action.params.nonce % 10 < 5) {
 				return {error: false};
 			} else {
 				return {error: true, message: 'Invalid peer'};
