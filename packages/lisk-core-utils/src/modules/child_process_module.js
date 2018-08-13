@@ -54,7 +54,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 					// Register event handler
 					this.childProcess.on('message', eventData => {
 						const event = Event.deserialize(eventData);
-						this.bus.emit(event.toEmitterKey(), event.serialize());
+						this.bus.emit(event.key(), event.serialize());
 					});
 
 					// Create socket for module

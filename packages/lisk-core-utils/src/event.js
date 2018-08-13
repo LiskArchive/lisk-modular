@@ -36,7 +36,7 @@ module.exports = class Event {
 		return `${this.source} -> ${this.module}:${this.name} ${JSON.stringify(this.data)}`;
 	}
 
-	toEmitterKey() {
+	key() {
 		return `${this.module}:${this.name}`;
 	}
 

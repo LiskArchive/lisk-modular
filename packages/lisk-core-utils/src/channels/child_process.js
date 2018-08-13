@@ -55,7 +55,7 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 	}
 
 	subscribe(eventName, cb) {
-		this.eventsMap[(new Event(eventName)).toEmitterKey()] = (data) => {
+		this.eventsMap[(new Event(eventName)).key()] = (data) => {
 			return setImmediate(cb, Event.deserialize(data));
 		};
 	}
