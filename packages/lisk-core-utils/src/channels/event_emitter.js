@@ -19,15 +19,15 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 	}
 
 	subscribe(eventName, cb) {
-		const event = new Event(eventName);
-
-		this.bus.on(event.toEmitterName(), cb);
+		this.bus.on((new Event(eventName)).toEmitterKey(), (data) => {
+			return setImmediate(cb, Event.deserialize(data));
+		});
 	}
 
 	publish(eventName, data) {
-		const event = new Event(eventName, data);
+		const event = new Event(eventName, data, this.moduleAlias);
 
-		this.bus.emit(event.toEmitterName(), event.data);
+		this.bus.emit(event.toEmitterKey(), event.serialize());
 	}
 
 	action(actionName, cb) {

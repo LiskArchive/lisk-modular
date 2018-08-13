@@ -18,8 +18,8 @@ module.exports = {
 		const logger = require('@lisk/lisk-logger-bunyan')(loggerConfig).child({identifier: 'chain'});
 
 		// Subscribe to event
-		channel.subscribe('chain:newTransaction', (transaction) => {
-			logger.info('Event - chain:newTransaction', transaction);
+		channel.subscribe('chain:newTransaction', (event) => {
+			logger.info(event.toString(), event);
 		});
 
 		// Register actions

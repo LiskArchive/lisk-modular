@@ -9,7 +9,7 @@ module.exports = class Base {
 		this.moduleAlias = moduleAlias;
 		this.options = options;
 
-		eventsList.set(this, events.map(e => new Event(e, null, this.moduleAlias)));
+		eventsList.set(this, events.map(e => new Event(`${this.moduleAlias}:${e}`, null, null)));
 		actionsList.set(
 			this,
 			actions.map(a => new Action(a, null, this.moduleAlias)),

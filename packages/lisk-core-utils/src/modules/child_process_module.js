@@ -6,6 +6,7 @@ const axon = require('axon');
 const rpc = require('axon-rpc');
 const ChildProcessChannel = require('../channels/child_process');
 const BaseModule = require('./base');
+const Event = require('../event');
 
 const childProcessLoaderPath = path.resolve(
 	__dirname,
@@ -51,8 +52,9 @@ module.exports = class ChildProcessModule extends BaseModule {
 					this.childProcess.removeAllListeners('message');
 
 					// Register event handler
-					this.childProcess.on('message', data2 => {
-						this.bus.emit(data2.eventName, data2.eventData);
+					this.childProcess.on('message', eventData => {
+						const event = Event.deserialize(eventData);
+						this.bus.emit(event.toEmitterKey(), event.serialize());
 					});
 
 					// Create socket for module

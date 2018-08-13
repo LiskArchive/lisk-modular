@@ -1,42 +1,51 @@
+
+const assert = require('assert');
+const eventNameReg = /^[a-zA-Z][a-zA-Z0-9]*$/;
+const moduleNameReg = /^[a-zA-Z][a-zA-Z0-9]*$/;
+const eventWithModuleNameReg = /^[a-zA-Z][a-zA-Z0-9]*:[a-zA-Z][a-zA-Z0-9]*$/;
+
 module.exports = class Event {
 	/**
 	 *
 	 * @param name - Can be simple event or be combination of module:event
+	 * @param source - Source module which triggers the event
 	 * @param data - Data associated with the event
-	 * @param moduleName - Module name if event name does not have its prefix
 	 */
-	constructor(name, data = null, moduleName = null) {
-		const eventName = name.split(':');
-		this.name = eventName.pop();
+	constructor(name, data = null, source = null) {
+		assert(eventWithModuleNameReg.test(name), `Event name "${name}" must be a valid name with module name.`);
+
+		[this.module, this.name] = name.split(':');
 		this.data = data;
-		this.module = eventName[0] || moduleName;
 
-		if (!this.module) {
-			throw new Error(
-				`Can't create an event ${this.name} without a module specified.`,
-			);
+		if(source) {
+			assert(moduleNameReg.test(source), `Source name "${source}" must be a valid module name.`);
+			this.source = source;
 		}
-
-		this.isValidEventName(this.name);
 	}
 
-	toJSON() {
-		return { name: this.name, module: this.module, data: this.data };
+	serialize() {
+		return {
+			name: this.name,
+			module: this.module,
+			source: this.source,
+			data: this.data
+		};
 	}
 
 	toString() {
+		return `${this.source} -> ${this.module}:${this.name} ${JSON.stringify(this.data)}`;
+	}
+
+	toEmitterKey() {
 		return `${this.module}:${this.name}`;
 	}
 
-	toEmitterName() {
-		return `${this.module}:${this.name}`;
-	}
-
-	isValidEventName(name, throwError = true) {
-		const result = /^[A-Za-z0-9:]+$/.test(name);
-		if (throwError && !result) {
-			throw new Error(`[${this.module}] Invalid event name ${name}.`);
-		}
-		return result;
+	static deserialize(data) {
+		let object = null;
+		if (typeof data === 'string')
+			object = JSON.parse(data);
+		else
+			object = data;
+		return new Event(`${object.module}:${object.name}`, object.data, object.source);
 	}
 };

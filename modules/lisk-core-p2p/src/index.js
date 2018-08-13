@@ -17,8 +17,8 @@ module.exports = {
 		const logger = require('@lisk/lisk-logger-bunyan')(loggerConfig).child({identifier: 'p2p'});
 
 		// Subscribe to event
-		channel.subscribe('p2p:newPeer', (peer) => {
-			logger.info('Event - p2p2:newPeer', peer);
+		channel.subscribe('p2p:newPeer', (event) => {
+			logger.info(event.toString(), event);
 		});
 
 		// Register actions
