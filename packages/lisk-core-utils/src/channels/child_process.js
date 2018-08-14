@@ -1,4 +1,5 @@
 const homeDir = require('os').homedir();
+const { EventEmitter2 } = require('eventemitter2');
 const axon = require('axon');
 const rpc = require('axon-rpc');
 const Promise = require('bluebird');
@@ -10,6 +11,7 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 	constructor(moduleAlias, events, actions, options = {}) {
 		super(moduleAlias, events, actions, options);
 
+		this.localBus = new EventEmitter2();
 		const busRpcSocket = axon.socket('req');
 		const busRpcSockePath = `unix://${homeDir}/.lisk-core/sockets/bus_rpc.sock`;
 		this.busRpcClient = new rpc.Client(busRpcSocket);
@@ -29,7 +31,6 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 		});
 
 		this.actionMap = {};
-		this.eventsMap = {};
 	}
 
 	async registerToBus() {
@@ -44,9 +45,10 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 					if (err) return reject(err);
 
 					// Register the event hook
-					process.on('message', data =>
-						setImmediate(this.eventsMap[data.eventName], data.eventData),
-					);
+					process.on('message', data => {
+						const event = Event.deserialize(data);
+						this.localBus.emit(event.key(), event);
+					});
 
 					return resolve(result);
 				},
@@ -55,7 +57,11 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 	}
 
 	subscribe(eventName, cb) {
-		this.eventsMap[new Event(eventName).key()] = data => setImmediate(cb, Event.deserialize(data));
+		this.localBus.on(new Event(eventName).key(), cb);
+	}
+
+	once(eventName, cb) {
+		this.localBus.once(new Event(eventName).key(), cb);
 	}
 
 	publish(eventName, data) {

@@ -31,21 +31,23 @@ module.exports = {
 			}
 		});
 
-		setInterval(async () => {
+		channel.once('lisk:ready', () => {
+			setInterval(async () => {
 
-			const id = Math.floor(Math.random() * Math.floor(100000));
-			const amount = Math.floor(Math.random() * Math.floor(100000000));
+				const id = Math.floor(Math.random() * Math.floor(100000));
+				const amount = Math.floor(Math.random() * Math.floor(100000000));
 
-			const transaction = {id , amount};
-			const result = await channel.invoke('chain:verifyTransaction', transaction);
+				const transaction = { id, amount };
+				const result = await channel.invoke('chain:verifyTransaction', transaction);
 
-			if(result && !result.error) {
-				channel.publish('chain:newTransaction', transaction);
-			} else {
-				logger.error('Transaction verification failed....')
-			}
+				if (result && !result.error) {
+					channel.publish('chain:newTransaction', transaction);
+				} else {
+					logger.error('Transaction verification failed....')
+				}
 
-		}, 2000);
+			}, 2000);
+		});
 	},
 	async unload (controller, options) {
 	}

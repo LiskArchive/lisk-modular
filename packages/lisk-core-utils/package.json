@@ -43,7 +43,8 @@
     "axon-rpc": "^0.0.3",
     "babel-runtime": "6.26.0",
     "bluebird": "^3.5.1",
-    "debug": "3.1.0"
+    "debug": "3.1.0",
+    "eventemitter2": "5.0.1"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",

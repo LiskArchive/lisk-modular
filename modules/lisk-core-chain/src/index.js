@@ -32,19 +32,21 @@ module.exports = {
 			}
 		});
 
-		setInterval(async () => {
+		channel.once('lisk:ready', () => {
+			setInterval(async () => {
 
-			const peer = {ip: '192.168.99.100', nonce: Math.floor(Math.random() * Math.floor(100000))};
+				const peer = {ip: '192.168.99.100', nonce: Math.floor(Math.random() * Math.floor(100000))};
 
-			const result = await channel.invoke('p2p:verifyPeer', peer);
+				const result = await channel.invoke('p2p:verifyPeer', peer);
 
-			if(result && !result.error) {
-				channel.publish('p2p:newPeer', peer);
-			} else {
-				logger.error('Peer verification failed....')
-			}
+				if(result && !result.error) {
+					channel.publish('p2p:newPeer', peer);
+				} else {
+					logger.error('Peer verification failed....')
+				}
 
-		}, 2000);
+			}, 2000);
+		});
 	},
 	async unload (controller, options) {
 	}

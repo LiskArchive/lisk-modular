@@ -22,6 +22,10 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 		this.bus.on(new Event(eventName).key(), data => setImmediate(cb, Event.deserialize(data)));
 	}
 
+	once(eventName, cb) {
+		this.bus.once(new Event(eventName).key(), data => setImmediate(cb, Event.deserialize(data)));
+	}
+
 	publish(eventName, data) {
 		const event = new Event(eventName, data, this.moduleAlias);
 

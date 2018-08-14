@@ -35,23 +35,19 @@ module.exports = class ChildProcessModule extends BaseModule {
 		});
 		this.childProcess = cluster.fork();
 
-		this.events.forEach(eventName => {
-			this.bus.on(`${this.alias}:${eventName}`, data => {
-				this.childProcess.send({
-					eventName: `${this.alias}:${eventName}`,
-					eventData: data,
-				});
-			});
-		});
-
 		this.rpcClient = null;
 
 		return new Promise((resolve, reject) => {
-			this.childProcess.once('message', data => {
+			const onChildProcessReady = data => {
 				if (data === 'ready') {
-					this.childProcess.removeAllListeners('message');
+					this.childProcess.removeListener('message', onChildProcessReady);
 
-					// Register event handler
+					// Forward bus message to child process
+					this.bus.onAny((name, event) => {
+						this.childProcess.send(event);
+					});
+
+					// Receive message from child process and send to bus
 					this.childProcess.on('message', eventData => {
 						const event = Event.deserialize(eventData);
 						this.bus.emit(event.key(), event.serialize());
@@ -61,9 +57,10 @@ module.exports = class ChildProcessModule extends BaseModule {
 					const moduleSocket = axon.socket('req');
 					const moduleSocketPath = `${homeDir}/.lisk-core/sockets/${
 						this.alias
-					}_rpc.sock`;
+						}_rpc.sock`;
 					this.rpcClient = new rpc.Client(moduleSocket);
 					moduleSocket.connect(`unix://${moduleSocketPath}`);
+
 
 					return setImmediate(resolve);
 				}
@@ -71,14 +68,16 @@ module.exports = class ChildProcessModule extends BaseModule {
 					reject,
 					new Error('Child process sent some other event than ready.'),
 				);
-			});
+			};
+
+			this.childProcess.on('message', onChildProcessReady);
 		})
-			.timeout(5000)
-			.then(() => {
-				this.logger.info(
-					`Ready module with alias: ${this.alias}(${this.version})`,
-				);
-			});
+		.timeout(5000)
+		.then(() => {
+			this.logger.info(
+				`Ready module with alias: ${this.alias}(${this.version})`,
+			);
+		});
 	}
 
 	async invoke(action) {

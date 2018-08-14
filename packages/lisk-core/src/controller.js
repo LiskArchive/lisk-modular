@@ -28,6 +28,8 @@ module.exports = class Controller {
 
 		logger.info('Bus listening to events', this.bus.getEvents());
 		logger.info('Bus ready for actions', this.bus.getActions());
+
+		this.channel.publish('lisk:ready', {});
 	}
 
 	getModule(alias) {
@@ -64,6 +66,6 @@ module.exports = class Controller {
 			this.modules[module.alias] = module;
 		});
 
-		await Promise.map(Object.keys(this.modules), m => this.modules[m].load());
+		await Promise.each(Object.keys(this.modules), m => this.modules[m].load());
 	}
 };
