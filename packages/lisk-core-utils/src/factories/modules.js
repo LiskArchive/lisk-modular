@@ -17,10 +17,7 @@ const ModuleFactory = {
 	},
 };
 
-ModuleFactory.register('in_memory', require('../modules/in_memory_module'));
-ModuleFactory.register(
-	'child_process',
-	require('../modules/child_process_module'),
-);
+ModuleFactory.register('in_memory', require('../modules/in_memory'));
+ModuleFactory.register('child_process', require('../modules/child_process'));
 
 module.exports = ModuleFactory;

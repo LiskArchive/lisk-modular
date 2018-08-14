@@ -1,5 +1,5 @@
 const debug = require('debug')('loaders:child_process');
-const ChildProcessModule = require('../modules/child_process_module');
+const ChildProcessModule = require('../modules/child_process');
 
 const moduleName = process.argv[2];
 const moduleOptions = JSON.parse(process.argv[3]);
