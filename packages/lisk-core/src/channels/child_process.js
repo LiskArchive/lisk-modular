@@ -1,10 +1,10 @@
-const homeDir = require('os').homedir();
 const { EventEmitter2 } = require('eventemitter2');
 const axon = require('axon');
 const rpc = require('axon-rpc');
 const Promise = require('bluebird');
 const Action = require('../action');
 const Event = require('../event');
+const config = require('../helpers/config');
 const BaseChannel = require('./base');
 
 module.exports = class ChildProcessChannel extends BaseChannel {
@@ -13,13 +13,11 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 
 		this.localBus = new EventEmitter2();
 		const busRpcSocket = axon.socket('req');
-		const busRpcSockePath = `unix://${homeDir}/.lisk-core/sockets/bus_rpc.sock`;
+		const busRpcSockePath = `unix://${config.dirs.sockets}/bus_rpc.sock`;
 		this.busRpcClient = new rpc.Client(busRpcSocket);
 		busRpcSocket.connect(busRpcSockePath);
 
-		const rpcSocketPath = `${homeDir}/.lisk-core/sockets/${
-			this.moduleAlias
-		}_rpc.sock`;
+		const rpcSocketPath = `${config.dirs.sockets}/${this.moduleAlias}_rpc.sock`;
 		const rpcSocket = axon.socket('rep');
 		this.rpcServer = new rpc.Server(rpcSocket);
 		rpcSocket.bind(`unix://${rpcSocketPath}`);

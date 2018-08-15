@@ -1,3 +1,5 @@
+const logger = require('@lisk/lisk-logger-bunyan');
+
 const componentsList = {};
 const componentsConfigCache = {};
 
@@ -14,5 +16,7 @@ const ComponentFactory = {
 		return componentsList[component](componentsConfigCache[component]);
 	},
 };
+
+ComponentFactory.register('logger', logger);
 
 module.exports = ComponentFactory;

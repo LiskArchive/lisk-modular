@@ -5,6 +5,6 @@ const CLI = require('../src/cli');
 
 app
 	.command('start')
-	.action(async (options) => CLI.start(options));
+	.action(async (program, options = {}) => CLI.start(options));
 
 app.parse(process.argv);

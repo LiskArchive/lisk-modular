@@ -1,10 +1,12 @@
 const Promise = require('bluebird');
+const fs = require('fs-extra');
+const config = require('./helpers/config');
 const ModuleFactory = require('./factories/modules');
 const ComponentFactory = require('./factories/components');
 const EventEmitterChannel = require('./channels/event_emitter');
 const Bus = require('./bus');
 
-const logger = ComponentFactory.create('logger');
+const logger = ComponentFactory.create('logger', config.components.logger);
 
 module.exports = class Controller {
 	constructor(options) {
@@ -68,5 +70,16 @@ module.exports = class Controller {
 		});
 
 		await Promise.each(Object.keys(this.modules), m => this.modules[m].load());
+	}
+
+	static async start(options = {}) {
+		process.title = `Lisk ${config.pkg.version} : (${config.dirs.root})`;
+
+		// Make sure all directories exists
+		Object.keys(config.dirs).forEach(dir => fs.ensureDirSync(config.dirs[dir]));
+
+		logger.info('Starting lisk...');
+		const ctrl = new Controller(Object.assign({}, config, options));
+		await ctrl.load();
 	}
 };

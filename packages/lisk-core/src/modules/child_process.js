@@ -1,11 +1,11 @@
 const path = require('path');
 const cluster = require('cluster');
-const homeDir = require('os').homedir();
 const Promise = require('bluebird');
 const axon = require('axon');
 const rpc = require('axon-rpc');
 const ChildProcessChannel = require('../channels/child_process');
 const Event = require('../event');
+const config = require('../helpers/config');
 const BaseModule = require('./base');
 
 const childProcessLoaderPath = path.resolve(
@@ -25,7 +25,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 			`Loading module with alias: ${this.alias}(${this.version})`,
 		);
 		cluster.setupMaster({
-			cwd: process.cwd(),
+			cwd: config.dirs.root,
 			stdio: [process.stdin, process.stdout, process.stderr, 'ipc'],
 			uid: process.getuid(),
 			gid: process.getgid(),
@@ -55,7 +55,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 
 					// Create socket for module
 					const moduleSocket = axon.socket('req');
-					const moduleSocketPath = `${homeDir}/.lisk-core/sockets/${
+					const moduleSocketPath = `${config.dirs.sockets}/${
 						this.alias
 					}_rpc.sock`;
 					this.rpcClient = new rpc.Client(moduleSocket);
@@ -97,7 +97,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 		}
 
 		// eslint-disable-next-line global-require, import/no-dynamic-require
-		const modulePackage = require(`../../../../modules/${moduleName}`);
+		const modulePackage = require(`${config.dirs.modules}/${moduleName}`);
 
 		process.title = `${modulePackage.alias} (${modulePackage.pkg.version})`;
 

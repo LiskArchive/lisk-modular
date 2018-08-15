@@ -1,9 +1,7 @@
-const path = require('path');
-const homeDir = require('os').homedir();
 const axon = require('axon');
 const rpc = require('axon-rpc');
-const fs = require('fs-extra');
 const { EventEmitter2 } = require('eventemitter2');
+const config = require('./helpers/config');
 const Action = require('./action');
 
 module.exports = class Bus extends EventEmitter2 {
@@ -16,8 +14,7 @@ module.exports = class Bus extends EventEmitter2 {
 		this.events = {};
 
 		// Sockets for IPC actions
-		const rpcSocketPath = `${homeDir}/.lisk-core/sockets/bus_rpc.sock`;
-		fs.ensureDirSync(path.dirname(rpcSocketPath));
+		const rpcSocketPath = `${config.dirs.sockets}/bus_rpc.sock`;
 		const rpcSocket = axon.socket('rep');
 		this.rpcServer = new rpc.Server(rpcSocket);
 		rpcSocket.bind(`unix://${rpcSocketPath}`);
