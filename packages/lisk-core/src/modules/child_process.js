@@ -57,10 +57,9 @@ module.exports = class ChildProcessModule extends BaseModule {
 					const moduleSocket = axon.socket('req');
 					const moduleSocketPath = `${homeDir}/.lisk-core/sockets/${
 						this.alias
-						}_rpc.sock`;
+					}_rpc.sock`;
 					this.rpcClient = new rpc.Client(moduleSocket);
 					moduleSocket.connect(`unix://${moduleSocketPath}`);
-
 
 					return setImmediate(resolve);
 				}
@@ -72,12 +71,12 @@ module.exports = class ChildProcessModule extends BaseModule {
 
 			this.childProcess.on('message', onChildProcessReady);
 		})
-		.timeout(5000)
-		.then(() => {
-			this.logger.info(
-				`Ready module with alias: ${this.alias}(${this.version})`,
-			);
-		});
+			.timeout(5000)
+			.then(() => {
+				this.logger.info(
+					`Ready module with alias: ${this.alias}(${this.version})`,
+				);
+			});
 	}
 
 	async invoke(action) {

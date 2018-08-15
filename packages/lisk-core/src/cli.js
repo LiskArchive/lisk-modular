@@ -1,4 +1,4 @@
-const { ComponentFactory } = require('@lisk/core-utils');
+const ComponentFactory = require('./factories/components'); // eslint-disable-line import/order
 const pkg = require('../package');
 const config = require('../config/config.json'); // eslint-disable-line import/order
 

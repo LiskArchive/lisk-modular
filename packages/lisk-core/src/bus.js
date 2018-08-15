@@ -4,7 +4,7 @@ const axon = require('axon');
 const rpc = require('axon-rpc');
 const fs = require('fs-extra');
 const { EventEmitter2 } = require('eventemitter2');
-const { Action } = require('@lisk/core-utils');
+const Action = require('./action');
 
 module.exports = class Bus extends EventEmitter2 {
 	constructor(controller, options) {

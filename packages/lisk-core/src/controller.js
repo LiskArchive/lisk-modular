@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
-const { ModuleFactory, ComponentFactory } = require('@lisk/core-utils');
-const EventEmitterChannel = require('@lisk/core-utils/src/channels/event_emitter');
+const ModuleFactory = require('./factories/modules');
+const ComponentFactory = require('./factories/components');
+const EventEmitterChannel = require('./channels/event_emitter');
 const Bus = require('./bus');
 
 const logger = ComponentFactory.create('logger');
