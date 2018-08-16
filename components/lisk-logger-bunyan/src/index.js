@@ -29,9 +29,11 @@ const createDirIfNotExists = filename => {
 
 const shouldShowSrc = level => level === 'debug' || level === 'trace';
 
-const createLogger = (
-	{ filename, level: fileLogLevel, consoleLogLevel } = defaultLoggerConfig,
-) => {
+const createLogger = ({
+	filename,
+	fileLogLevel,
+	consoleLogLevel,
+} = defaultLoggerConfig) => {
 	const fileLevel = fileLogLevel !== 'none' ? fileLogLevel : 'fatal';
 	createDirIfNotExists(filename);
 	const streams = [

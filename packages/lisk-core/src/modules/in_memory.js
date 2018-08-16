@@ -21,12 +21,19 @@ module.exports = class InMemoryModule extends BaseModule {
 		);
 
 		await this.channel.registerToBus();
+		this.channel.publish(`${this.alias}:registeredToBus`);
+
+		this.channel.publish(`${this.alias}:loading:started`);
 		await this.getPackageSpecs().load(this.channel, this.options);
+		this.channel.publish(`${this.alias}:loading:finished`);
+
 		this.logger.info(`Ready module with alias: ${this.alias}(${this.version})`);
 	}
 
 	async unload() {
+		this.channel.publish(`${this.alias}:unloading:started`);
 		await this.getPackageSpecs().unload();
+		this.channel.publish(`${this.alias}:unloading:finished`);
 	}
 
 	async invoke(action) {

@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 const moduleNameReg = /^[a-zA-Z][a-zA-Z0-9]*$/;
-const eventWithModuleNameReg = /^[a-zA-Z][a-zA-Z0-9]*:[a-zA-Z][a-zA-Z0-9]*$/;
+const eventWithModuleNameReg = /^([a-zA-Z][a-zA-Z0-9]*)((?::[a-zA-Z][a-zA-Z0-9]*)+)$/;
 
 module.exports = class Event {
 	/**
@@ -16,7 +16,11 @@ module.exports = class Event {
 			`Event name "${name}" must be a valid name with module name.`,
 		);
 
-		[this.module, this.name] = name.split(':');
+		const matches = eventWithModuleNameReg.exec(name);
+		// eslint-disable-next-line prefer-destructuring
+		this.module = matches;
+		// Remove the first prefixed ':' symbol
+		this.name = matches[2].substring(1);
 		this.data = data;
 
 		if (source) {

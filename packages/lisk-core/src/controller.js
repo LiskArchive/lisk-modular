@@ -54,6 +54,16 @@ module.exports = class Controller {
 			'getComponentConfig',
 			async action => this.config.components[action.params],
 		);
+
+		// If log level is greater than info
+		if (logger.level() < 30) {
+			this.bus.onAny((name, event) => {
+				logger.debug(
+					`MONITOR: ${event.source} -> ${event.module}:${event.name}`,
+					event.data,
+				);
+			});
+		}
 	}
 
 	async loadModules() {
@@ -69,17 +79,63 @@ module.exports = class Controller {
 			this.modules[module.alias] = module;
 		});
 
-		await Promise.each(Object.keys(this.modules), m => this.modules[m].load());
+		return Promise.each(Object.keys(this.modules), m => this.modules[m].load());
+	}
+
+	async unloadModules(modules = null) {
+		return Promise.mapSeries(modules || Object.keys(this.modules), async m => {
+			await this.modules[m].unload();
+			delete this.modules[m];
+		});
 	}
 
 	static async start(options = {}) {
 		process.title = `Lisk ${config.pkg.version} : (${config.dirs.root})`;
 
 		// Make sure all directories exists
+		fs.emptyDirSync(config.dirs.temp);
 		Object.keys(config.dirs).forEach(dir => fs.ensureDirSync(config.dirs[dir]));
+		fs.writeFileSync(`${config.dirs.pids}/controller.pid`, process.pid);
 
 		logger.info('Starting lisk...');
 		const ctrl = new Controller(Object.assign({}, config, options));
+
+		process.on('uncaughtException', err => {
+			// Handle error safely
+			logger.fatal('System error', { message: err.message, stack: err.stack });
+			ctrl.stop(err, 1);
+		});
+
+		process.on('unhandledRejection', err => {
+			// Handle error safely
+			logger.fatal('System error', { message: err.message, stack: err.stack });
+			ctrl.stop(err, 1);
+		});
+
+		process.once('SIGTERM', () => ctrl.stop());
+
+		process.once('SIGINT', () => ctrl.stop());
+
 		await ctrl.load();
+	}
+
+	stop(reason, code = 0) {
+		logger.info('Stopping controller...');
+
+		if (reason) {
+			logger.error(reason);
+		}
+
+		this.unloadModules()
+			.then(() => {
+				logger.info('Unload completed');
+
+				fs.emptyDirSync(config.dirs.temp);
+				process.exit(code);
+			})
+			.catch(error => {
+				logger.error('Caused error during upload', error);
+				process.exit(1);
+			});
 	}
 };

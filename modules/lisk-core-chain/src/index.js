@@ -1,23 +1,20 @@
-'use strict';
-
+const packageJSON = require('../package.json');
 const Chain = require('./chain');
+
+let blockChain = null;
 
 module.exports = {
 	alias: 'chain',
-	pkg: require('../package.json'),
+	pkg: packageJSON,
 	defaults: {},
-	events: [
-		'newTransaction',
-		'newBlock',
-		'forgingStatusChange'
-	],
-	actions: [
-		'verifyTransaction'
-	],
-	async load (channel, options) {
-		const blockChain = new Chain(channel, options);
+	events: ['newTransaction', 'newBlock', 'forgingStatusChange'],
+	actions: ['verifyTransaction'],
+	async load(channel, options) {
+		blockChain = new Chain(channel, options);
 		channel.once('lisk:ready', blockChain.bootstrap.bind(blockChain));
 	},
-	async unload (controller, options) {
-	}
+	// eslint-disable-next-line no-unused-vars
+	async unload(channel, options) {
+		blockChain.logger.info('Unloading module chain');
+	},
 };
