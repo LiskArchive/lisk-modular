@@ -18,7 +18,7 @@ module.exports = class Event {
 
 		const matches = eventWithModuleNameReg.exec(name);
 		// eslint-disable-next-line prefer-destructuring
-		this.module = matches;
+		this.module = matches[1];
 		// Remove the first prefixed ':' symbol
 		this.name = matches[2].substring(1);
 		this.data = data;
