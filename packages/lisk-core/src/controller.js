@@ -45,7 +45,7 @@ module.exports = class Controller {
 			['ready'],
 			['getComponentConfig'],
 			this.bus,
-			{},
+			{ skipInternalEvents: true },
 		);
 
 		await this.channel.registerToBus();

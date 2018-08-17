@@ -68,6 +68,13 @@ module.exports = class Bus extends EventEmitter2 {
 		throw new Error(`Action ${action.key()} is not registered to bus.`);
 	}
 
+	emit(eventName, eventValue) {
+		if (!this.getEvents().includes(eventName)) {
+			throw new Error(`Event ${eventName} is not registered to bus.`);
+		}
+		super.emit(eventName, eventValue);
+	}
+
 	getActions() {
 		return Object.keys(this.actions);
 	}

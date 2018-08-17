@@ -4,6 +4,12 @@ const Action = require('../action');
 const eventsList = new WeakMap();
 const actionsList = new WeakMap();
 
+const internalEvents = [
+	'registeredToBus',
+	'loading:started',
+	'loading:finished',
+];
+
 module.exports = class Base {
 	constructor(moduleAlias, events, actions, options = {}) {
 		this.moduleAlias = moduleAlias;
@@ -11,7 +17,9 @@ module.exports = class Base {
 
 		eventsList.set(
 			this,
-			events.map(e => new Event(`${this.moduleAlias}:${e}`, null, null)),
+			(options.skipInternalEvents ? events : internalEvents.concat(events)).map(
+				e => new Event(`${this.moduleAlias}:${e}`, null, null),
+			),
 		);
 		actionsList.set(
 			this,
