@@ -2,8 +2,8 @@ const EventEmitterChannel = require('../channels/event_emitter');
 const BaseModule = require('./base');
 
 module.exports = class InMemoryModule extends BaseModule {
-	constructor(moduleName, options = {}, logger, bus) {
-		super(moduleName, options, logger);
+	constructor(npmPackageName, options = {}, logger, bus) {
+		super(npmPackageName, options, logger);
 		this.type = 'in_memory';
 		this.bus = bus;
 	}

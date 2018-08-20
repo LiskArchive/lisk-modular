@@ -14,8 +14,8 @@ const childProcessLoaderPath = path.resolve(
 );
 
 module.exports = class ChildProcessModule extends BaseModule {
-	constructor(moduleName, options = {}, logger, bus) {
-		super(moduleName, options, logger);
+	constructor(npmPackageName, options = {}, logger, bus) {
+		super(npmPackageName, options, logger);
 		this.bus = bus;
 		this.type = 'child_process';
 	}
@@ -30,7 +30,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 			uid: process.getuid(),
 			gid: process.getgid(),
 			execArgv: process.execArgv,
-			args: [`${this.name}`, JSON.stringify(this.options)],
+			args: [`${this.packgeName}`, JSON.stringify(this.options)],
 			exec: `${childProcessLoaderPath}`,
 		});
 		this.childProcess = cluster.fork();
@@ -100,7 +100,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 		}
 
 		// eslint-disable-next-line global-require, import/no-dynamic-require
-		const modulePackage = require(`${config.dirs.modules}/${moduleName}`);
+		const modulePackage = require(moduleName);
 
 		process.title = `${modulePackage.alias} (${modulePackage.pkg.version})`;
 
@@ -116,6 +116,8 @@ module.exports = class ChildProcessModule extends BaseModule {
 		process.once('SIGINT', () => {
 			channel.publish(`${modulePackage.alias}:unloading:started`);
 			modulePackage.unload(channel, moduleOptions).then(() => {
+				channel.busRpcSocket.close();
+				channel.rpcSocket.close();
 				channel.publish(`${modulePackage.alias}:unloading:finished`);
 				process.exit(0);
 			});

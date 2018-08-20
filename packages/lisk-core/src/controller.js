@@ -4,6 +4,7 @@ const config = require('./helpers/config');
 const ModuleFactory = require('./factories/modules');
 const ComponentFactory = require('./factories/components');
 const EventEmitterChannel = require('./channels/event_emitter');
+const Schema = require('./helpers/schema');
 const Bus = require('./bus');
 
 const logger = ComponentFactory.create('logger', config.components.logger);
@@ -23,6 +24,37 @@ module.exports = class Controller {
 				maxListeners: 1000,
 			});
 		}
+	}
+
+	async setup() {
+		await Schema.setup();
+
+		const errors = Schema.validate(this.config, Schema.getSchema().config);
+		if (errors.length) {
+			logger.error(errors);
+			throw new Error('Configuration Validation Failed');
+		}
+
+		process.title = `Lisk ${this.config.pkg.version} : (${
+			this.config.dirs.root
+		})`;
+
+		// Make sure all directories exists
+		fs.emptyDirSync(this.config.dirs.temp);
+		Object.keys(this.config.dirs).forEach(dir =>
+			fs.ensureDirSync(this.config.dirs[dir]),
+		);
+		fs.writeFileSync(`${this.config.dirs.pids}/controller.pid`, process.pid);
+
+		// Set the custom directory to load modules
+		if (this.config.dirs.modules) {
+			logger.info(
+				`Setting custom module directory to: ${this.config.dirs.modules}`,
+			);
+		}
+
+		// Setup bus RPC socket
+		await this.bus.setup();
 	}
 
 	async load() {
@@ -67,12 +99,14 @@ module.exports = class Controller {
 	}
 
 	async loadModules() {
-		Object.keys(this.config.modules).forEach(moduleName => {
-			const moduleConfig = this.config.modules[moduleName];
+		this.config.modules.forEach(moduleConfig => {
+			const npmPackage = this.config.dirs.modules
+				? `${this.config.dirs.modules}/${moduleConfig.npmPackage}`
+				: moduleConfig.npmPackage;
 			const module = ModuleFactory.create(
 				moduleConfig.loadAs,
-				moduleName,
-				moduleConfig,
+				npmPackage,
+				moduleConfig.options,
 				logger,
 				this.bus,
 			);
@@ -90,15 +124,9 @@ module.exports = class Controller {
 	}
 
 	static async start(options = {}) {
-		process.title = `Lisk ${config.pkg.version} : (${config.dirs.root})`;
-
-		// Make sure all directories exists
-		fs.emptyDirSync(config.dirs.temp);
-		Object.keys(config.dirs).forEach(dir => fs.ensureDirSync(config.dirs[dir]));
-		fs.writeFileSync(`${config.dirs.pids}/controller.pid`, process.pid);
-
 		logger.info('Starting lisk...');
 		const ctrl = new Controller(Object.assign({}, config, options));
+		await ctrl.setup();
 
 		process.on('uncaughtException', err => {
 			// Handle error safely
@@ -125,6 +153,8 @@ module.exports = class Controller {
 		if (reason) {
 			logger.error(reason);
 		}
+
+		this.bus.rpcSocket.close();
 
 		this.unloadModules()
 			.then(() => {

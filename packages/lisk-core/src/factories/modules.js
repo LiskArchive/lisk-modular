@@ -8,12 +8,18 @@ const ModuleFactory = {
 		moduleTypes[moduleType] = moduleClass;
 	},
 
-	create: (moduleType, moduleName, options = {}, logger = null, bus = null) => {
+	create: (
+		moduleType,
+		npmPackageName,
+		options = {},
+		logger = null,
+		bus = null,
+	) => {
 		if (!moduleTypes[moduleType]) {
 			throw new TypeError(`Module type "${moduleType}" not registered.`);
 		}
 
-		return new moduleTypes[moduleType](moduleName, options, logger, bus);
+		return new moduleTypes[moduleType](npmPackageName, options, logger, bus);
 	},
 };
 

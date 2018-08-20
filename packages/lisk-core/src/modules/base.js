@@ -3,17 +3,17 @@ const packageSpecs = new WeakMap();
 module.exports = class Base {
 	/**
 	 * Represent an abstract module of lisk ecosystem
-	 * @param {String} moduleName
+	 * @param {String} npmPackageName
 	 * @param {object} options
 	 * @param {loadAsProcess} options.loadAsProcess
 	 */
-	constructor(moduleName, options, logger) {
-		logger.info(`Bootstrapping module ${moduleName}`);
+	constructor(npmPackageName, options, logger) {
+		logger.info(`Bootstrapping module ${npmPackageName}`);
 
-		// eslint-disable-next-line  import/no-dynamic-require, global-require
-		const pkg = require(`../../../../modules/${moduleName}`);
+		// eslint-disable-next-line import/no-dynamic-require, global-require
+		const pkg = require(npmPackageName);
 
-		this.name = moduleName;
+		this.packgeName = npmPackageName;
 		this.alias = pkg.alias;
 		this.version = pkg.pkg.version;
 		this.events = pkg.events;

@@ -1,4 +1,5 @@
 const axon = require('axon');
+const Promise = require('bluebird');
 const rpc = require('axon-rpc');
 const { EventEmitter2 } = require('eventemitter2');
 const config = require('./helpers/config');
@@ -14,10 +15,8 @@ module.exports = class Bus extends EventEmitter2 {
 		this.events = {};
 
 		// Sockets for IPC actions
-		const rpcSocketPath = `${config.dirs.sockets}/bus_rpc.sock`;
-		const rpcSocket = axon.socket('rep');
-		this.rpcServer = new rpc.Server(rpcSocket);
-		rpcSocket.bind(`unix://${rpcSocketPath}`);
+		this.rpcSocket = axon.socket('rep');
+		this.rpcServer = new rpc.Server(this.rpcSocket);
 
 		this.rpcServer.expose(
 			'registerChannel',
@@ -33,6 +32,15 @@ module.exports = class Bus extends EventEmitter2 {
 				.then(data => setImmediate(cb, null, data))
 				.catch(error => setImmediate(cb, error));
 		});
+	}
+
+	async setup() {
+		return new Promise((resolve, reject) => {
+			const rpcSocketPath = `${config.dirs.sockets}/bus_rpc.sock`;
+			this.rpcSocket.once('bind', resolve);
+			this.rpcSocket.once('error', reject);
+			this.rpcSocket.bind(`unix://${rpcSocketPath}`);
+		}).timeout(5000);
 	}
 
 	// eslint-disable-next-line no-unused-vars

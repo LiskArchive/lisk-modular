@@ -1,14 +1,22 @@
 {
-	"modules": {
-		"lisk-core-chain": {
+	"modulesDir": "../../../modules/",
+	"modules": [
+		{
+			"npmPackage": "lisk-core-chain",
 			"loadAs": "child_process",
-			"option1": ""
+			"options": {
+				"option1": ""
+			}
 		},
-		"lisk-core-p2p": {
+		{
+			"npmPackage": "lisk-core-p2p",
 			"loadAs": "child_process",
-			"option1": ""
+			"options": {
+				"option1": ""
+			}
 		}
-	},
+	],
+
 	"components": {
 		"logger": {
 			"filename": "logs/lisk.log",

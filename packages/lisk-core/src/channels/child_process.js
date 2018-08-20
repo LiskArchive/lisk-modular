@@ -12,15 +12,15 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 		super(moduleAlias, events, actions, options);
 
 		this.localBus = new EventEmitter2();
-		const busRpcSocket = axon.socket('req');
-		const busRpcSockePath = `unix://${config.dirs.sockets}/bus_rpc.sock`;
-		this.busRpcClient = new rpc.Client(busRpcSocket);
-		busRpcSocket.connect(busRpcSockePath);
+		this.busRpcSocket = axon.socket('req');
+		const busRpcSocketPath = `unix://${config.dirs.sockets}/bus_rpc.sock`;
+		this.busRpcClient = new rpc.Client(this.busRpcSocket);
+		this.busRpcSocket.connect(busRpcSocketPath);
 
 		const rpcSocketPath = `${config.dirs.sockets}/${this.moduleAlias}_rpc.sock`;
-		const rpcSocket = axon.socket('rep');
-		this.rpcServer = new rpc.Server(rpcSocket);
-		rpcSocket.bind(`unix://${rpcSocketPath}`);
+		this.rpcSocket = axon.socket('rep');
+		this.rpcServer = new rpc.Server(this.rpcSocket);
+		this.rpcSocket.bind(`unix://${rpcSocketPath}`);
 
 		this.rpcServer.expose('invoke', (action, cb) => {
 			this.invoke(action)
