@@ -1,5 +1,19 @@
 # Events & Actions for Modules
 
+### Common Events
+
+Following events are available to all modules
+
+* registeredToBus
+* loading:started
+* loading:finished
+
+## Lisk (Controller)
+
+| Actions            | Events |
+| ------------------ | ------ |
+| getComponentConfig | ready  |
+
 ## Chain
 
 | Actions         | Events                    |
