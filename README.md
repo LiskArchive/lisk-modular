@@ -19,6 +19,6 @@ git clone git@github.com:LiskHQ/lisk-modular.git
 cd lisk-moduler
 npm install
 npm install -g bunyan
-lerna bootstrap --hoist
+npx lerna bootstrap --hoist
 node packages/lisk-core/bin/liskctrl start | bunyan -o short
 ```
