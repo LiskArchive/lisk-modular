@@ -16,7 +16,7 @@ Please see the [list of actions and events](./docs/modules_events_and_actions.md
 
 ```bash
 git clone git@github.com:LiskHQ/lisk-modular.git
-cd lisk-moduler
+cd lisk-modular
 npm install
 npm install -g bunyan
 npx lerna bootstrap --hoist
