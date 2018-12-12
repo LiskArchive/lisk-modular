@@ -21,9 +21,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 	}
 
 	async load() {
-		this.logger.info(
-			`Loading module with alias: ${this.alias}(${this.version})`,
-		);
+		this.logger.info(`Loading module with alias: ${this.alias}(${this.version})`);
 		cluster.setupMaster({
 			cwd: config.dirs.root,
 			stdio: [process.stdin, process.stdout, process.stderr, 'ipc'],
@@ -38,7 +36,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 		this.rpcClient = null;
 
 		// Receive message from child process and send to bus
-		this.childProcess.on('message', eventData => {
+		this.childProcess.on('message', (eventData) => {
 			const event = Event.deserialize(eventData);
 			this.bus.emit(event.key(), event.serialize());
 		});
@@ -49,7 +47,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 		});
 
 		return (
-			new Promise(resolve => {
+			new Promise((resolve) => {
 				this.bus.once(`${this.alias}:loading:finished`, () => {
 					// Create socket for module
 					this.rpcSocket = axon.socket('req');
@@ -62,12 +60,10 @@ module.exports = class ChildProcessModule extends BaseModule {
 					return setImmediate(resolve);
 				});
 			})
-				// Wait for 5 seconds to load the module
+		// Wait for 5 seconds to load the module
 				.timeout(5000)
 				.then(() => {
-					this.logger.info(
-						`Ready module with alias: ${this.alias}(${this.version})`,
-					);
+					this.logger.info(`Ready module with alias: ${this.alias}(${this.version})`);
 				})
 		);
 	}
@@ -75,10 +71,9 @@ module.exports = class ChildProcessModule extends BaseModule {
 	async unload() {
 		this.childProcess.kill('SIGINT');
 
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			this.bus.once(`${this.alias}:unloading:finished`, () =>
-				setImmediate(resolve),
-			);
+				setImmediate(resolve));
 		}).timeout(50000);
 	}
 

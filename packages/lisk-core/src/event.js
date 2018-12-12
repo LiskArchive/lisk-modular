@@ -42,7 +42,7 @@ module.exports = class Event {
 	}
 
 	toString() {
-		return `${this.source} -> ${this.module}:${this.name}}`;
+		return `${this.source} -> ${this.module}:${this.name}`;
 	}
 
 	key() {

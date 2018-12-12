@@ -31,7 +31,7 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 		this.actionMap = {};
 
 		// Get event from parent process and relay to local bus
-		process.on('message', eventData => {
+		process.on('message', (eventData) => {
 			const event = Event.deserialize(eventData);
 			this.localBus.emit(event.key(), event);
 		});
@@ -49,7 +49,7 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 					if (err) return reject(err);
 
 					// Register the event hook
-					process.on('message', data => {
+					process.on('message', (data) => {
 						const event = Event.deserialize(data);
 						this.localBus.emit(event.key(), event);
 					});

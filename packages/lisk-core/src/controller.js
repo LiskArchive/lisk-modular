@@ -42,15 +42,12 @@ module.exports = class Controller {
 		// Make sure all directories exists
 		fs.emptyDirSync(this.config.dirs.temp);
 		Object.keys(this.config.dirs).forEach(dir =>
-			fs.ensureDirSync(this.config.dirs[dir]),
-		);
+			fs.ensureDirSync(this.config.dirs[dir]));
 		fs.writeFileSync(`${this.config.dirs.pids}/controller.pid`, process.pid);
 
 		// Set the custom directory to load modules
 		if (this.config.dirs.modules) {
-			logger.info(
-				`Setting custom module directory to: ${this.config.dirs.modules}`,
-			);
+			logger.info(`Setting custom module directory to: ${this.config.dirs.modules}`);
 		}
 
 		// Setup bus RPC socket
@@ -99,7 +96,7 @@ module.exports = class Controller {
 	}
 
 	async loadModules() {
-		this.config.modules.forEach(moduleConfig => {
+		this.config.modules.forEach((moduleConfig) => {
 			const npmPackage = this.config.dirs.modules
 				? `${this.config.dirs.modules}/${moduleConfig.npmPackage}`
 				: moduleConfig.npmPackage;
@@ -117,7 +114,7 @@ module.exports = class Controller {
 	}
 
 	async unloadModules(modules = null) {
-		return Promise.mapSeries(modules || Object.keys(this.modules), async m => {
+		return Promise.mapSeries(modules || Object.keys(this.modules), async (m) => {
 			await this.modules[m].unload();
 			delete this.modules[m];
 		});
@@ -128,13 +125,13 @@ module.exports = class Controller {
 		const ctrl = new Controller(Object.assign({}, config, options));
 		await ctrl.setup();
 
-		process.on('uncaughtException', err => {
+		process.on('uncaughtException', (err) => {
 			// Handle error safely
 			logger.fatal('System error', { message: err.message, stack: err.stack });
 			ctrl.stop(err, 1);
 		});
 
-		process.on('unhandledRejection', err => {
+		process.on('unhandledRejection', (err) => {
 			// Handle error safely
 			logger.fatal('System error', { message: err.message, stack: err.stack });
 			ctrl.stop(err, 1);
@@ -163,7 +160,7 @@ module.exports = class Controller {
 				fs.emptyDirSync(config.dirs.temp);
 				process.exit(code);
 			})
-			.catch(error => {
+			.catch((error) => {
 				logger.error('Caused error during upload', error);
 				process.exit(1);
 			});
