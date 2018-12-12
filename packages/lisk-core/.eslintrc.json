@@ -1,4 +1,3 @@
 {
-	"extends": ["lisk-base"],
-	"plugins": ["mocha"]
+	"extends": ["airbnb-base"]
 }
