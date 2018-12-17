@@ -4,6 +4,7 @@
 		"indent": [2, "tab"],
 		"no-tabs": 0,
 		"function-paren-newline": "off",
-		"no-new": "off"
+		"no-new": "off",
+		"arrow-parens": "off"
 	}
 }
