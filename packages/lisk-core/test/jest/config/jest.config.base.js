@@ -3,4 +3,5 @@ module.exports = {
 	collectCoverage: true,
 	rootDir: '../../../../',
 	setupTestFrameworkScriptFile: '<rootDir>/test/jest/config/setup.js',
+	clearMocks: true,
 };
