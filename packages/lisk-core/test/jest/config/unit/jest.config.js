@@ -5,4 +5,5 @@ module.exports = {
 	testMatch: [
 		'<rootDir>/test/jest/specs/unit/**/*.(spec|test).js',
 	],
+	clearMocks: true,
 };

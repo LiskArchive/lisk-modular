@@ -8,11 +8,6 @@ jest.mock('../../../../../src/helpers/schema');
 jest.mock('fs-extra');
 
 describe('Controller Class', () => {
-
-	beforeEach(() => {
-		fsExtra
-	});
-
 	describe('#constructor', () => {
 		it('should initialize the instance correctly when valid arguments were provided.', () => {
 			// Arrange
