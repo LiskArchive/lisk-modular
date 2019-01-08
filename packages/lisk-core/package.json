@@ -65,6 +65,8 @@
     "eslint-plugin-jest": "22.1.2",
     "husky": "0.14.3",
     "jest": "23.6.0",
+    "jest-chain": "1.0.5",
+    "jest-extended": "0.11.0",
     "lint-staged": "5.0.0",
     "nyc": "11.3.0",
     "prettier": "1.8.2",
