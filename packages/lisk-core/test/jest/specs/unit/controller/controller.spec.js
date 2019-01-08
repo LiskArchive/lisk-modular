@@ -118,12 +118,31 @@ describe('Controller Class', () => {
 			// Act
 			await controller.setup();
 
-
-			expect(fsExtra.emptyDirSync).toHaveBeenCalledTimes(1);
 			// Assert
+			expect(fsExtra.emptyDirSync).toHaveBeenCalledTimes(1);
 			expect(process.title).toBe(`Lisk ${config.pkg.version} : (${
 				config.dirs.root
 			})`);
+		});
+
+		it('should call Bus.setup() method.', async () => {
+			// Arrange
+			const config = {
+				pkg: {
+					version: 'dummyVersion',
+				},
+				dirs: {
+					root: 'rootFolder',
+				},
+			};
+
+			const controller = new Controller(config);
+
+			// Act
+			await controller.setup();
+
+			// Assert
+			expect(controller.bus.setup).toHaveBeenCalledTimes(1);
 		});
 	});
 });
