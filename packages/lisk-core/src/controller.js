@@ -9,7 +9,7 @@ const Bus = require('./bus');
 
 const logger = ComponentFactory.create('logger', config.components.logger);
 
-module.exports = class Controller {
+class Controller {
 	constructor(options) {
 		logger.info('Initializing controller');
 		this.config = options;
@@ -17,13 +17,11 @@ module.exports = class Controller {
 		this.channel = null;
 
 		// Setting up bus
-		if (!this.bus) {
-			this.bus = new Bus(this, {
-				wildcard: true,
-				delimiter: ':',
-				maxListeners: 1000,
-			});
-		}
+		this.bus = new Bus(this, {
+			wildcard: true,
+			delimiter: ':',
+			maxListeners: 1000,
+		});
 	}
 
 	async setup() {
@@ -165,4 +163,6 @@ module.exports = class Controller {
 				process.exit(1);
 			});
 	}
-};
+}
+
+module.exports = Controller;
