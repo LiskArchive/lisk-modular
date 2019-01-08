@@ -9,7 +9,7 @@ jest.mock('fs-extra');
 
 describe('Controller Class', () => {
 	describe('#constructor', () => {
-		it('should initialize the instance correctly when valid arguments were provided.', () => {
+		it('should initialize the instance correctly without an exception.', () => {
 			// Arrange
 			const config = {
 				some: 'key',
@@ -36,7 +36,7 @@ describe('Controller Class', () => {
 	});
 
 	describe('#setup', () => {
-		it('should throw error when an undefined configuration parameter provided.', async () => {
+		it('should throw error when an unallowed configuration parameter provided.', async () => {
 			// Arrange
 			const config = {
 				some: 'key',
