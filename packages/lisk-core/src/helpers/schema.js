@@ -35,4 +35,5 @@ module.exports = {
 	},
 
 	getSchema: () => resolvedRefsSpec,
+	sanitizeErrorMessages: errors => errors.reduce((acc, err) => `${acc}${err.code}: ${err.message}\n`, ''),
 };

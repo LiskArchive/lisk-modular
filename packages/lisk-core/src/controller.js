@@ -13,7 +13,7 @@ class Controller {
 	constructor(options) {
 		logger.info('Initializing controller');
 		this.config = options;
-		this.modules = {};
+		this.modules = [];
 		this.channel = null;
 
 		// Setting up bus
@@ -30,18 +30,23 @@ class Controller {
 		const errors = Schema.validate(this.config, Schema.getSchema().config);
 		if (errors.length) {
 			logger.error(errors);
-			throw new Error('Configuration Validation Failed');
+			throw new Error(Schema.sanitizeErrorMessages(errors));
 		}
+
+		// Make sure all directories exists
+		Object.keys(this.config.dirs).forEach(dir =>
+			fs.ensureDirSync(this.config.dirs[dir]));
+
+		// Empty temp directory
+		fs.emptyDirSync(this.config.dirs.temp);
+
+		// write process.pid
+		fs.writeFileSync(`${this.config.dirs.pids}/controller.pid`, process.pid);
 
 		process.title = `Lisk ${this.config.pkg.version} : (${
 			this.config.dirs.root
 		})`;
 
-		// Make sure all directories exists
-		fs.emptyDirSync(this.config.dirs.temp);
-		Object.keys(this.config.dirs).forEach(dir =>
-			fs.ensureDirSync(this.config.dirs[dir]));
-		fs.writeFileSync(`${this.config.dirs.pids}/controller.pid`, process.pid);
 
 		// Set the custom directory to load modules
 		if (this.config.dirs.modules) {
