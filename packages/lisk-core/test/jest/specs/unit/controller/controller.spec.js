@@ -39,14 +39,9 @@ describe('Controller Class', () => {
 			const config = fixtures.UNALLOWED_CONFIG;
 			const controller = new Controller(config);
 
-			try {
-				// Act
-				await controller.setup();
-			} catch (err) {
-				// Assert
-				expect(err).toBeInstanceOf(Error);
-				// expect(err.message).toBe('Configuration validation failed!');
-			}
+			// Act & Assert
+			expect(controller.setup()).rejects.toThrow(Error);
+			// expect(controller.setup()).rejects.toThrow('Configuration validation failed!');
 		});
 
 		it('should throw error when an invalid configuration parameter provided.', async () => {
@@ -54,20 +49,13 @@ describe('Controller Class', () => {
 			const config = fixtures.INVALID_CONFIG;
 			const controller = new Controller(config);
 
-			try {
-				// Act
-				await controller.setup();
-			} catch (err) {
-				// Assert
-				expect(err).toBeInstanceOf(Error);
-				// expect(err.message).toBe('Configuration validation failed!');
-			}
+			// Act & Assert
+			expect(controller.setup()).rejects.toThrow(Error);
 		});
 
 		it('should make sure all directories exist.', async () => {
 			// Arrange
 			const config = fixtures.VALID_CONFIG;
-
 			const controller = new Controller(config);
 
 			// Act
@@ -86,11 +74,9 @@ describe('Controller Class', () => {
 				.toHaveBeenCalledWith(`${config.dirs.pids}/controller.pid`, process.pid);
 		});
 
-
 		it('should set process title.', async () => {
 			// Arrange
 			const config = fixtures.VALID_CONFIG;
-
 			const controller = new Controller(config);
 
 			// Act
@@ -105,7 +91,6 @@ describe('Controller Class', () => {
 		it('should call Bus.setup() method.', async () => {
 			// Arrange
 			const config = fixtures.VALID_CONFIG;
-
 			const controller = new Controller(config);
 
 			// Act

@@ -7,7 +7,7 @@ const {
 	VALID_SOURCE_NAME,
 	INVALID_SOURCE_NAME,
 	DATA,
-} = require('./constants');
+} = require('./fixtures');
 
 describe('Event Class', () => {
 	describe('#constructor', () => {
