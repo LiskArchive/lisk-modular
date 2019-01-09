@@ -1,7 +1,7 @@
 const Controller = require('../../../../../src/controller');
 const Bus = require('../../../../../src/bus');
 const fsExtra = require('fs-extra');
-
+const fixtures = require('./fixtures');
 // Mocks will be hoisted
 jest.mock('../../../../../src/bus');
 jest.mock('../../../../../src/helpers/schema');
@@ -11,9 +11,7 @@ describe('Controller Class', () => {
 	describe('#constructor', () => {
 		it('should initialize the instance correctly without an exception.', () => {
 			// Arrange
-			const config = {
-				some: 'key',
-			};
+			const config = fixtures.UNALLOWED_CONFIG;
 
 			// Act
 			const controller = new Controller(config);
@@ -38,9 +36,7 @@ describe('Controller Class', () => {
 	describe('#setup', () => {
 		it('should throw error when an unallowed configuration parameter provided.', async () => {
 			// Arrange
-			const config = {
-				some: 'key',
-			};
+			const config = fixtures.UNALLOWED_CONFIG;
 			const controller = new Controller(config);
 
 			try {
@@ -55,9 +51,7 @@ describe('Controller Class', () => {
 
 		it('should throw error when an invalid configuration parameter provided.', async () => {
 			// Arrange
-			const config = {
-				modulesDir: false,
-			};
+			const config = fixtures.INVALID_CONFIG;
 			const controller = new Controller(config);
 
 			try {
@@ -72,16 +66,7 @@ describe('Controller Class', () => {
 
 		it('should make sure all directories exist.', async () => {
 			// Arrange
-			const config = {
-				pkg: {
-					version: 'dummyVersion',
-				},
-				dirs: {
-					root: 'rootFolder',
-					temp: 'tempFolder',
-					pids: 'pidsFolder',
-				},
-			};
+			const config = fixtures.VALID_CONFIG;
 
 			const controller = new Controller(config);
 
@@ -104,14 +89,7 @@ describe('Controller Class', () => {
 
 		it('should set process title.', async () => {
 			// Arrange
-			const config = {
-				pkg: {
-					version: 'dummyVersion',
-				},
-				dirs: {
-					root: 'rootFolder',
-				},
-			};
+			const config = fixtures.VALID_CONFIG;
 
 			const controller = new Controller(config);
 
@@ -119,7 +97,6 @@ describe('Controller Class', () => {
 			await controller.setup();
 
 			// Assert
-			expect(fsExtra.emptyDirSync).toHaveBeenCalledTimes(1);
 			expect(process.title).toBe(`Lisk ${config.pkg.version} : (${
 				config.dirs.root
 			})`);
@@ -127,14 +104,7 @@ describe('Controller Class', () => {
 
 		it('should call Bus.setup() method.', async () => {
 			// Arrange
-			const config = {
-				pkg: {
-					version: 'dummyVersion',
-				},
-				dirs: {
-					root: 'rootFolder',
-				},
-			};
+			const config = fixtures.VALID_CONFIG;
 
 			const controller = new Controller(config);
 
