@@ -1,6 +1,6 @@
 const Event = require('../event');
 const Action = require('../action');
-const BaseChannel = require('./base');
+const BaseChannel = require('./BaseChannel');
 
 module.exports = class EventEmitterChannel extends BaseChannel {
 	constructor(moduleAlias, events, actions, bus, options = {}) {

@@ -5,7 +5,7 @@ const Promise = require('bluebird');
 const Action = require('../action');
 const Event = require('../event');
 const config = require('../helpers/config');
-const BaseChannel = require('./base');
+const BaseChannel = require('./BaseChannel');
 
 module.exports = class ChildProcessChannel extends BaseChannel {
 	constructor(moduleAlias, events, actions, options = {}) {

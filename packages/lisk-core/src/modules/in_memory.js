@@ -1,4 +1,4 @@
-const EventEmitterChannel = require('../channels/event_emitter');
+const EventEmitterChannel = require('../channels/EventEmitterChannel');
 const BaseModule = require('./base');
 
 module.exports = class InMemoryModule extends BaseModule {

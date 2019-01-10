@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const config = require('./helpers/config');
 const ModuleFactory = require('./factories/modules');
 const ComponentFactory = require('./factories/components');
-const EventEmitterChannel = require('./channels/event_emitter');
+const EventEmitterChannel = require('./channels/EventEmitterChannel');
 const Schema = require('./helpers/schema');
 const Bus = require('./bus');
 

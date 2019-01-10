@@ -10,7 +10,7 @@ const internalEvents = [
 	'loading:finished',
 ];
 
-module.exports = class Base {
+module.exports = class BaseChannel {
 	constructor(moduleAlias, events, actions, options = {}) {
 		this.moduleAlias = moduleAlias;
 		this.options = options;
