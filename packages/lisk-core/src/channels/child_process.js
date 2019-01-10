@@ -15,7 +15,7 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 		this.busRpcSocket = axon.socket('req');
 		const busRpcSocketPath = `unix://${config.dirs.sockets}/bus_rpc.sock`;
 		this.busRpcClient = new rpc.Client(this.busRpcSocket);
-		this.busRpcSocket.connect(busRpcSocketPath);
+		this.busRpcSocket.connect(busRpcSocketPath, () => {});
 
 		const rpcSocketPath = `${config.dirs.sockets}/${this.moduleAlias}_rpc.sock`;
 		this.rpcSocket = axon.socket('rep');
