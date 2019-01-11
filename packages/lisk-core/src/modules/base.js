@@ -1,5 +1,3 @@
-const packageSpecs = new WeakMap();
-
 module.exports = class Base {
 	/**
 	 * Represent an abstract module of lisk ecosystem
@@ -10,19 +8,19 @@ module.exports = class Base {
 	constructor(npmPackageName, options, logger) {
 		logger.info(`Bootstrapping module ${npmPackageName}`);
 
-		// eslint-disable-next-line import/no-dynamic-require, global-require
-		const pkg = require(npmPackageName);
+		/* eslint-disable import/no-dynamic-require, global-require */
+		const {
+			alias, version, events, actions,
+		} = require(npmPackageName);
+		/* eslint-enable import/no-dynamic-require, global-require */
 
 		this.packgeName = npmPackageName;
-		this.alias = pkg.alias;
-		this.version = pkg.pkg.version;
-		this.events = pkg.events;
-		this.actions = pkg.actions;
-		this.pkg = pkg.pkg;
+		this.alias = alias;
+		this.version = version;
+		this.events = events;
+		this.actions = actions;
 		this.options = options;
 		this.logger = logger;
-
-		packageSpecs.set(this, pkg);
 	}
 
 	// eslint-disable-next-line class-methods-use-this
@@ -38,9 +36,5 @@ module.exports = class Base {
 	// eslint-disable-next-line no-unused-vars, class-methods-use-this
 	async unload(channel, options) {
 		throw new TypeError('Implement this method in child class.');
-	}
-
-	getPackageSpecs() {
-		return packageSpecs.get(this);
 	}
 };

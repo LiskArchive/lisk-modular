@@ -2,7 +2,7 @@ const Event = require('../event');
 const Action = require('../action');
 const BaseChannel = require('./BaseChannel');
 
-module.exports = class EventEmitterChannel extends BaseChannel {
+class EventEmitterChannel extends BaseChannel {
 	constructor(moduleAlias, events, actions, bus, options = {}) {
 		super(moduleAlias, events, actions, options);
 		this.bus = bus;
@@ -57,4 +57,6 @@ module.exports = class EventEmitterChannel extends BaseChannel {
 
 		return this.bus.invoke(action.serialize());
 	}
-};
+}
+
+module.exports = EventEmitterChannel;

@@ -5,7 +5,7 @@ let p2p;
 
 module.exports = {
 	alias: 'p2p',
-	pkg: packageJSON,
+	version: packageJSON.version,
 	defaults: {},
 	events: ['peerAdded', 'newPeer'],
 	actions: ['verifyPeer'],

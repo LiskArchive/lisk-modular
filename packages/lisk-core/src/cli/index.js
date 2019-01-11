@@ -1,5 +1,5 @@
-const ActionStart = require('./actions/start');
+const start = require('./actions/start');
 
 module.exports = {
-	start: ActionStart,
+	start,
 };

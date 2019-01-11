@@ -1,11 +1,10 @@
-const config = require('../../helpers/config');
+const logger = require('../../helpers/logger');
 const Controller = require('../../controller');
-const ComponentFactory = require('../../factories/components');
 
-const logger = ComponentFactory.create('logger', config.components.logger);
-
-module.exports = async function start(options = {}) {
+async function start(options = {}) {
 	logger.info('CMD start');
 	logger.debug('CMD start called with options', options);
 	return Controller.start(options);
-};
+}
+
+module.exports = start;

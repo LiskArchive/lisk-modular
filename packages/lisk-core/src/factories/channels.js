@@ -16,7 +16,7 @@ const ChannelFactory = {
 	},
 };
 
-ChannelFactory.register('event_emitter', require('../channels/event_emitter'));
-ChannelFactory.register('socket', require('../channels/child_process'));
+ChannelFactory.register('event_emitter', require('../channels/EventEmitterChannel'));
+ChannelFactory.register('socket', require('../channels/ChildProcessChannel'));
 
 module.exports = ChannelFactory;

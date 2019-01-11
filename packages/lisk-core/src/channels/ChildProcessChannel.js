@@ -7,7 +7,7 @@ const Event = require('../event');
 const config = require('../helpers/config');
 const BaseChannel = require('./BaseChannel');
 
-module.exports = class ChildProcessChannel extends BaseChannel {
+class ChildProcessChannel extends BaseChannel {
 	constructor(moduleAlias, events, actions, options = {}) {
 		super(moduleAlias, events, actions, options);
 
@@ -105,4 +105,6 @@ module.exports = class ChildProcessChannel extends BaseChannel {
 			});
 		});
 	}
-};
+}
+
+module.exports = ChildProcessChannel;

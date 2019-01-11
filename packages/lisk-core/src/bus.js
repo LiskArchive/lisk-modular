@@ -5,7 +5,7 @@ const { EventEmitter2 } = require('eventemitter2');
 const config = require('./helpers/config');
 const Action = require('./action');
 
-module.exports = class Bus extends EventEmitter2 {
+class Bus extends EventEmitter2 {
 	constructor(controller, options) {
 		super(options);
 		this.controller = controller;
@@ -90,4 +90,6 @@ module.exports = class Bus extends EventEmitter2 {
 	getEvents() {
 		return Object.keys(this.events);
 	}
-};
+}
+
+module.exports = Bus;

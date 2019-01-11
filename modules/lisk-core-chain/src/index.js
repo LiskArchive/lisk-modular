@@ -5,7 +5,7 @@ let blockChain = null;
 
 module.exports = {
 	alias: 'chain',
-	pkg: packageJSON,
+	version: packageJSON.version,
 	defaults: {},
 	events: ['newTransaction', 'newBlock', 'forgingStatusChange'],
 	actions: ['verifyTransaction'],
