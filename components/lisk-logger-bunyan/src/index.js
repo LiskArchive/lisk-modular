@@ -46,7 +46,7 @@ const createLogger = (
 	const logger = bunyan.createLogger({
 		name: filename,
 		level: fileLevel,
-		serializers: bunyan.stdSerializers,
+		// serializers: bunyan.stdSerializers,
 		src: shouldShowSrc(fileLogLevel),
 		streams,
 	});

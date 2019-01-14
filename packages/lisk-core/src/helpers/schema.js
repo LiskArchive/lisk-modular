@@ -13,27 +13,21 @@ const validator = new ZSchema({
 	noEmptyArrays: true,
 });
 
-let resolvedRefsSpec = null;
+
+const sanitizeErrorMessages = errors => errors.reduce((acc, err) => `${acc}${err.code}: ${err.message}\n`, '');
+
+// Decoupled setup from global state
+const	validate = async (data) => {
+	const result = await jsonRefs.resolveRefs(ConfigSchema);
+	const schema = result.resolved.config; // THIS .config property KILLED ME :D
+
+	if (!validator.validate(data, schema)) {
+		const errors = validator.getLastErrors();
+		throw new Error(sanitizeErrorMessages(errors));
+	}
+};
 
 module.exports = {
-	validate: (data, schema) => {
-		if (!validator.validate(data, schema)) {
-			return validator.getLastErrors();
-		}
-
-		return [];
-	},
-
-	setup: async () => {
-		if (resolvedRefsSpec) return Promise.resolve();
-
-		return jsonRefs
-			.resolveRefs(Object.assign({}, ConfigSchema), {})
-			.then((results) => {
-				resolvedRefsSpec = results.resolved;
-			});
-	},
-
-	getSchema: () => resolvedRefsSpec,
-	sanitizeErrorMessages: errors => errors.reduce((acc, err) => `${acc}${err.code}: ${err.message}\n`, ''),
+	validate,
+	sanitizeErrorMessages,
 };

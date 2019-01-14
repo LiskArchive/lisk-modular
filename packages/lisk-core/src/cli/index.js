@@ -1,5 +1,8 @@
-const ActionStart = require('./actions/start');
+const app = require('commander');
+const start = require('./actions/start');
 
-module.exports = {
-	start: ActionStart,
-};
+app
+	.command('start')
+	.action(async (program, options = {}) => start(options));
+
+module.exports = app;

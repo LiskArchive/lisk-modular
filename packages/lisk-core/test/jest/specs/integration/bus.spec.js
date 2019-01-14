@@ -1,8 +1,8 @@
 const Bus = require('../../../../src/bus');
 const ChildProcessChannel = require('../../../../src/channels/ChildProcessChannel');
 
-describe('Bus', () => {
-	describe('when constructed', () => {
+describe('Registering Channels', () => {
+	describe('when Bus was constructed', () => {
 		let bus;
 		let channel;
 
@@ -11,7 +11,7 @@ describe('Bus', () => {
 			channel.rpcSocket.close();
 		});
 
-		it('should expose registerChannel method for ChildProcessChannel.', async (done) => {
+		it('should expose registerChannel method.', async (done) => {
 			// Arrange
 			bus = new Bus({},	{
 				wildcard: true,

@@ -2,19 +2,21 @@ const Promise = require('bluebird');
 const fs = require('fs-extra');
 const config = require('./helpers/config');
 const ModuleFactory = require('./factories/modules');
-const ComponentFactory = require('./factories/components');
+const logger = require('./helpers/logger');
 const EventEmitterChannel = require('./channels/EventEmitterChannel');
 const Schema = require('./helpers/schema');
 const Bus = require('./bus');
 
-const logger = ComponentFactory.create('logger', config.components.logger);
-
 class Controller {
-	constructor(options) {
+	async init(options) {
 		logger.info('Initializing controller');
-		this.config = options;
+		// Why passing whole config object?
+		this.config = { ...config, ...options };
 		this.modules = [];
 		this.channel = null;
+
+		// Schema setup most be done before validations
+		await Schema.validate(this.config);
 
 		// Setting up bus
 		this.bus = new Bus(this, {
@@ -24,29 +26,23 @@ class Controller {
 		});
 	}
 
-	async setup() {
-		await Schema.setup();
-
-		const errors = Schema.validate(this.config, Schema.getSchema().config);
-		if (errors.length) {
-			logger.error(errors);
-			throw new Error(Schema.sanitizeErrorMessages(errors));
-		}
-
-		// Make sure all directories exists
-		Object.keys(this.config.dirs).forEach(dir =>
-			fs.ensureDirSync(this.config.dirs[dir]));
-
+	prepareWorkspace() {
 		// Empty temp directory
 		fs.emptyDirSync(this.config.dirs.temp);
 
+		// Make sure all directories exists
+		Object.values(this.config.dirs).forEach(dir => fs.ensureDirSync(dir));
+
 		// write process.pid
 		fs.writeFileSync(`${this.config.dirs.pids}/controller.pid`, process.pid);
+	}
+
+	async setup() {
+		this.prepareWorkspace();
 
 		process.title = `Lisk ${this.config.pkg.version} : (${
 			this.config.dirs.root
 		})`;
-
 
 		// Set the custom directory to load modules
 		if (this.config.dirs.modules) {
@@ -123,28 +119,29 @@ class Controller {
 		});
 	}
 
-	static async start(options = {}) {
+	async start(options = {}) {
+		await this.init(options);
+
 		logger.info('Starting lisk...');
-		const ctrl = new Controller(Object.assign({}, config, options));
-		await ctrl.setup();
+		await this.setup();
 
 		process.on('uncaughtException', (err) => {
 			// Handle error safely
 			logger.fatal('System error', { message: err.message, stack: err.stack });
-			ctrl.stop(err, 1);
+			this.stop(err, 1);
 		});
 
 		process.on('unhandledRejection', (err) => {
 			// Handle error safely
 			logger.fatal('System error', { message: err.message, stack: err.stack });
-			ctrl.stop(err, 1);
+			this.stop(err, 1);
 		});
 
-		process.once('SIGTERM', () => ctrl.stop());
+		process.once('SIGTERM', () => this.stop());
 
-		process.once('SIGINT', () => ctrl.stop());
+		process.once('SIGINT', () => this.stop());
 
-		await ctrl.load();
+		await this.load();
 	}
 
 	stop(reason, code = 0) {
