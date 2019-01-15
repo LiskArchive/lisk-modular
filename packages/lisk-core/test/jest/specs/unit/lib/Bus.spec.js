@@ -1,5 +1,5 @@
 const eventemitter2 = require('eventemitter2');
-const Bus = require('../../../../src/bus');
+const Bus = require('../../../../../src/lib/Bus');
 
 jest.mock('eventemitter2');
 
