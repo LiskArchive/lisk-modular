@@ -13,7 +13,6 @@ const validator = new ZSchema({
 	noEmptyArrays: true,
 });
 
-
 const sanitizeErrorMessages = errors => errors.reduce((acc, err) => `${acc}${err.code}: ${err.message}\n`, '');
 
 // Decoupled setup from global state

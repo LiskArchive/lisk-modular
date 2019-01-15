@@ -1,6 +1,6 @@
+const liskBunyan = require('@lisk/lisk-logger-bunyan');
 const config = require('../helpers/config');
-const logger = require('@lisk/lisk-logger-bunyan')(config.components.logger);
 
-console.log('logger created');
+const logger = liskBunyan(config.components.logger);
 
 module.exports = logger;
