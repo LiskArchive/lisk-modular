@@ -1,13 +1,11 @@
 const Promise = require('bluebird');
 const fs = require('fs-extra');
 const config = require('./helpers/config');
+const logger = require('./helpers/logger');
 const ModuleFactory = require('./factories/modules');
-const ComponentFactory = require('./factories/components');
 const EventEmitterChannel = require('./channels/event_emitter');
 const Schema = require('./helpers/schema');
 const Bus = require('./bus');
-
-const logger = ComponentFactory.create('logger', config.components.logger);
 
 module.exports = class Controller {
 	constructor(options) {
