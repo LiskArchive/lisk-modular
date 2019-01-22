@@ -1,9 +1,6 @@
 const Event = require('../event');
 const Action = require('../action');
 
-const eventsList = new WeakMap();
-const actionsList = new WeakMap();
-
 const internalEvents = [
 	'registeredToBus',
 	'loading:started',
@@ -14,25 +11,30 @@ module.exports = class Base {
 	constructor(moduleAlias, events, actions, options = {}) {
 		this.moduleAlias = moduleAlias;
 		this.options = options;
+		this.eventsList = [];
+		this.actionsList = [];
 
-		eventsList.set(
-			this,
-			(options.skipInternalEvents ? events : internalEvents.concat(events)).map(
-				e => new Event(`${this.moduleAlias}:${e}`, null, null),
-			),
+		events.forEach((event) =>
+			this.eventList.push(new Event(`${moduleAlias}:${event}`, null, null)),
 		);
-		actionsList.set(
-			this,
-			actions.map(a => new Action(`${this.moduleAlias}:${a}`, null, null)),
+
+		if (!options.skipInternalEvents) {
+			internalEvents.forEach((event) =>
+				this.eventList.push(new Event(`${moduleAlias}:${event}`, null, null)),
+			);
+		}
+
+		actions.forEach((action) =>
+			this.actionsList.push(new Action(`${moduleAlias}:${action}`, null, null)),
 		);
 	}
 
 	getActions() {
-		return actionsList.get(this);
+		return this.actionsList;
 	}
 
 	getEvents() {
-		return eventsList.get(this);
+		return this.eventsList;
 	}
 
 	// eslint-disable-next-line class-methods-use-this
