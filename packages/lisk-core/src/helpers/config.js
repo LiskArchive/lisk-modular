@@ -6,6 +6,8 @@ const packageJSON = require('../../package.json');
 
 let { modulesDir } = configJSON;
 
+const {version, author, name} = packageJSON;
+
 if (modulesDir) {
 	// Get relative path
 	const relativeModulesDir = path.resolve(
@@ -33,5 +35,7 @@ const runTimeConfig = {
 module.exports = {
 	...configJSON,
 	...runTimeConfig,
-	pkg: packageJSON,
+	author,
+	version,
+	name,
 };

@@ -3,9 +3,13 @@ const P2P = require('./p2p');
 
 let p2p;
 
+const {version, author, name} = packageJSON;
+
 module.exports = {
 	alias: 'p2p',
-	pkg: packageJSON,
+	author, 
+	version,
+	name,
 	defaults: {},
 	events: ['peerAdded', 'newPeer'],
 	actions: ['verifyPeer'],

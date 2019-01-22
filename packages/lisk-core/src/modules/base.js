@@ -1,5 +1,3 @@
-const packageSpecs = new WeakMap();
-
 module.exports = class Base {
 	/**
 	 * Represent an abstract module of lisk ecosystem
@@ -15,14 +13,12 @@ module.exports = class Base {
 
 		this.packgeName = npmPackageName;
 		this.alias = pkg.alias;
-		this.version = pkg.pkg.version;
+		this.version = pkg.version;
 		this.events = pkg.events;
 		this.actions = pkg.actions;
-		this.pkg = pkg.pkg;
+		this.pkg = pkg;
 		this.options = options;
 		this.logger = logger;
-
-		packageSpecs.set(this, pkg);
 	}
 
 	// eslint-disable-next-line class-methods-use-this
@@ -41,6 +37,6 @@ module.exports = class Base {
 	}
 
 	getPackageSpecs() {
-		return packageSpecs.get(this);
+		return this.pkg;
 	}
 };

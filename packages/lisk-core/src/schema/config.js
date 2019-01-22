@@ -27,9 +27,6 @@ module.exports = {
 				required: ['logger'],
 				additionalProperties: false,
 			},
-			pkg: {
-				type: 'object',
-			},
 			dirs: {
 				type: 'object',
 				properties: {

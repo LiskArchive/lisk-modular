@@ -102,7 +102,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 		// eslint-disable-next-line global-require, import/no-dynamic-require
 		const modulePackage = require(moduleName);
 
-		process.title = `${modulePackage.alias} (${modulePackage.pkg.version})`;
+		process.title = `${modulePackage.alias} (${modulePackage.version})`;
 
 		const channel = new ChildProcessChannel(
 			modulePackage.alias,

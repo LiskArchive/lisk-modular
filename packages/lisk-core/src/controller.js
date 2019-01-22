@@ -35,7 +35,7 @@ module.exports = class Controller {
 			throw new Error('Configuration Validation Failed');
 		}
 
-		process.title = `Lisk ${this.config.pkg.version} : (${
+		process.title = `Lisk ${this.config.version} : (${
 			this.config.dirs.root
 		})`;
 

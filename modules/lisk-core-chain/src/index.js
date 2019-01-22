@@ -3,9 +3,13 @@ const Chain = require('./chain');
 
 let blockChain = null;
 
+const {version, author, name} = packageJSON;
+
 module.exports = {
 	alias: 'chain',
-	pkg: packageJSON,
+	author, 
+	version,
+	name,
 	defaults: {},
 	events: ['newTransaction', 'newBlock', 'forgingStatusChange'],
 	actions: ['verifyTransaction'],
