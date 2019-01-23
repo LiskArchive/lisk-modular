@@ -7,37 +7,51 @@ const internalEvents = [
 	'loading:finished',
 ];
 
+/**
+ * Private object is used to store private variables of the instances.
+ * Since variables will be stored with the instance reference (this),
+ * this approach is an acceptable way to store private variables
+ * and easy to refactor in future.
+ *
+ * See: http://voidcanvas.com/es6-private-variables/
+ */
+const private = {
+	eventList: new WeakMap(),
+	actionList: new WeakMap(),
+}
+
 module.exports = class Base {
 	constructor(moduleAlias, events, actions, options = {}) {
 		this.moduleAlias = moduleAlias;
 		this.options = options;
-		this.eventsList = [];
-		this.actionsList = [];
+
+		const eventList = [];
+		const actionList = [];
 
 		events.forEach((event) =>
-			this.eventList.push(new Event(`${moduleAlias}:${event}`, null, null)),
+			eventList.push(new Event(`${moduleAlias}:${event}`, null, null)),
 		);
 
 		if (!options.skipInternalEvents) {
 			internalEvents.forEach((event) =>
-				this.eventList.push(new Event(`${moduleAlias}:${event}`, null, null)),
+				eventList.push(new Event(`${moduleAlias}:${event}`, null, null)),
 			);
 		}
 
 		actions.forEach((action) =>
-			this.actionsList.push(new Action(`${moduleAlias}:${action}`, null, null)),
+			actionList.push(new Action(`${moduleAlias}:${action}`, null, null)),
 		);
 
-		this.eventsList = Object.freeze(this.eventList);
-		this.actionsList = Object.freeze(this.actionsList);
+		private.eventList.set(this, Object.freeze(eventList));
+		private.actionList.set(this, Object.freeze(actionList));
 	}
 
 	getActions() {
-		return this.actionsList;
+		return private.actionList.get(this);
 	}
 
 	getEvents() {
-		return this.eventsList;
+		return private.eventList.get(this);
 	}
 
 	// eslint-disable-next-line class-methods-use-this
