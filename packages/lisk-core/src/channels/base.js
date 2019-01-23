@@ -27,6 +27,9 @@ module.exports = class Base {
 		actions.forEach((action) =>
 			this.actionsList.push(new Action(`${moduleAlias}:${action}`, null, null)),
 		);
+
+		this.eventsList = Object.freeze(this.eventList);
+		this.actionsList = Object.freeze(this.actionsList);
 	}
 
 	getActions() {
