@@ -1,6 +1,5 @@
-const start = require('./actions/start');
-
 const app = require('commander');
+const start = require('./actions/start');
 
 app
 	.command('start')
