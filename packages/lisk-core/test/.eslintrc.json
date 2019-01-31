@@ -1,17 +1,10 @@
 {
+	"extends": ["../.eslintrc.json", "plugin:jest/recommended"],
+	"plugins": ["jest"],
 	"env": {
-		"mocha": true
-	},
-	"globals": {
-		"Given": true,
-		"When": true,
-		"Then": true,
-		"expect": true,
-		"sandbox": true,
-		"sinon": true
+		"jest/globals": true
 	},
 	"rules": {
-		"arrow-body-style": "off",
-		"new-cap": ["error", { "capIsNewExceptions": ["Given", "When", "Then"] }]
+		"import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
 	}
 }
