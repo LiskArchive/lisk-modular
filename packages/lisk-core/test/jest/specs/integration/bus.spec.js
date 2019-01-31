@@ -1,5 +1,5 @@
 const Bus = require('../../../../src/bus');
-const ChildProcessChannel = require('../../../../src/channels/ChildProcessChannel');
+const ChildProcessChannel = require('../../../../src/channels/child_process');
 
 describe('Registering Channels', () => {
 	describe('when Bus was constructed', () => {
