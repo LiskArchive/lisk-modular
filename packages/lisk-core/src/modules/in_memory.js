@@ -9,9 +9,7 @@ module.exports = class InMemoryModule extends BaseModule {
 	}
 
 	async load() {
-		this.logger.info(
-			`Loading module with alias: ${this.alias}(${this.version})`,
-		);
+		this.logger.info(`Loading module with alias: ${this.alias}(${this.version})`);
 		this.channel = new EventEmitterChannel(
 			this.alias,
 			this.events,

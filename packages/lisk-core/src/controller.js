@@ -42,15 +42,12 @@ module.exports = class Controller {
 		// Make sure all directories exists
 		fs.emptyDirSync(this.config.dirs.temp);
 		Object.keys(this.config.dirs).forEach(dir =>
-			fs.ensureDirSync(this.config.dirs[dir]),
-		);
+			fs.ensureDirSync(this.config.dirs[dir]));
 		fs.writeFileSync(`${this.config.dirs.pids}/controller.pid`, process.pid);
 
 		// Set the custom directory to load modules
 		if (this.config.dirs.modules) {
-			logger.info(
-				`Setting custom module directory to: ${this.config.dirs.modules}`,
-			);
+			logger.info(`Setting custom module directory to: ${this.config.dirs.modules}`);
 		}
 
 		// Setup bus RPC socket

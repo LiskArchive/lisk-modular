@@ -17,9 +17,7 @@ module.exports = class Base {
 
 		eventsList.set(
 			this,
-			(options.skipInternalEvents ? events : internalEvents.concat(events)).map(
-				e => new Event(`${this.moduleAlias}:${e}`, null, null),
-			),
+			(options.skipInternalEvents ? events : internalEvents.concat(events)).map(e => new Event(`${this.moduleAlias}:${e}`, null, null)),
 		);
 		actionsList.set(
 			this,
@@ -72,9 +70,7 @@ module.exports = class Base {
 	isValidEventName(name, throwError = true) {
 		const result = /[A-Za-z0-9]+:[A-Za-z0-9]+/.test(name);
 		if (throwError && !result) {
-			throw new Error(
-				`[${this.moduleAlias.alias}] Invalid event name ${name}.`,
-			);
+			throw new Error(`[${this.moduleAlias.alias}] Invalid event name ${name}.`);
 		}
 		return result;
 	}
@@ -82,9 +78,7 @@ module.exports = class Base {
 	isValidActionName(name, throwError = true) {
 		const result = /[A-Za-z0-9]+:[A-Za-z0-9]+/.test(name);
 		if (throwError && !result) {
-			throw new Error(
-				`[${this.moduleAlias.alias}] Invalid action name ${name}.`,
-			);
+			throw new Error(`[${this.moduleAlias.alias}] Invalid action name ${name}.`);
 		}
 		return result;
 	}

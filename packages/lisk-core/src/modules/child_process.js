@@ -21,9 +21,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 	}
 
 	async load() {
-		this.logger.info(
-			`Loading module with alias: ${this.alias}(${this.version})`,
-		);
+		this.logger.info(`Loading module with alias: ${this.alias}(${this.version})`);
 		cluster.setupMaster({
 			cwd: config.dirs.root,
 			stdio: [process.stdin, process.stdout, process.stderr, 'ipc'],
@@ -65,9 +63,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 				// Wait for 5 seconds to load the module
 				.timeout(5000)
 				.then(() => {
-					this.logger.info(
-						`Ready module with alias: ${this.alias}(${this.version})`,
-					);
+					this.logger.info(`Ready module with alias: ${this.alias}(${this.version})`);
 				})
 		);
 	}
@@ -77,8 +73,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 
 		return new Promise((resolve) => {
 			this.bus.once(`${this.alias}:unloading:finished`, () =>
-				setImmediate(resolve),
-			);
+				setImmediate(resolve));
 		}).timeout(50000);
 	}
 

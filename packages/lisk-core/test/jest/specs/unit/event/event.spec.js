@@ -15,9 +15,7 @@ describe('Event Class', () => {
 			expect(() => {
 				// eslint-disable-next-line no-unused-vars
 				const event = new Event();
-			}).toThrow(
-				'Event name "undefined" must be a valid name with module name.',
-			);
+			}).toThrow('Event name "undefined" must be a valid name with module name.');
 		});
 
 		it('should throw error when invalid name argument was provided.', () => {
@@ -25,11 +23,9 @@ describe('Event Class', () => {
 			expect(() => {
 				// eslint-disable-next-line no-unused-vars
 				const event = new Event(INVALID_EVENT_NAME_ARG);
-			}).toThrow(
-				`Event name "${
-					INVALID_EVENT_NAME_ARG
-				}" must be a valid name with module name.`,
-			);
+			}).toThrow(`Event name "${
+				INVALID_EVENT_NAME_ARG
+			}" must be a valid name with module name.`);
 		});
 
 		it('should throw error when invalid source argument was provided.', () => {
@@ -37,9 +33,7 @@ describe('Event Class', () => {
 			expect(() => {
 				// eslint-disable-next-line no-unused-vars
 				const event = new Event(VALID_EVENT_NAME_ARG, null, INVALID_SOURCE_NAME);
-			}).toThrow(
-				`Source name "${INVALID_SOURCE_NAME}" must be a valid module name.`,
-			);
+			}).toThrow(`Source name "${INVALID_SOURCE_NAME}" must be a valid module name.`);
 		});
 
 		it('should initialize the instance correctly when valid arguments were provided.', () => {
