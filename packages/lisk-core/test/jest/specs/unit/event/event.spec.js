@@ -13,7 +13,8 @@ describe('Event Class', () => {
 	describe('#constructor', () => {
 		it('should throw error when no name argument was provided.', () => {
 			expect(() => {
-				new Event();
+				// eslint-disable-next-line no-unused-vars
+				const event = new Event();
 			}).toThrow(
 				'Event name "undefined" must be a valid name with module name.',
 			);
@@ -22,7 +23,8 @@ describe('Event Class', () => {
 		it('should throw error when invalid name argument was provided.', () => {
 			// Act & Assert
 			expect(() => {
-				new Event(INVALID_EVENT_NAME_ARG);
+				// eslint-disable-next-line no-unused-vars
+				const event = new Event(INVALID_EVENT_NAME_ARG);
 			}).toThrow(
 				`Event name "${
 					INVALID_EVENT_NAME_ARG
@@ -33,7 +35,8 @@ describe('Event Class', () => {
 		it('should throw error when invalid source argument was provided.', () => {
 			// Act & Assert
 			expect(() => {
-				new Event(VALID_EVENT_NAME_ARG, null, INVALID_SOURCE_NAME);
+				// eslint-disable-next-line no-unused-vars
+				const event = new Event(VALID_EVENT_NAME_ARG, null, INVALID_SOURCE_NAME);
 			}).toThrow(
 				`Source name "${INVALID_SOURCE_NAME}" must be a valid module name.`,
 			);
