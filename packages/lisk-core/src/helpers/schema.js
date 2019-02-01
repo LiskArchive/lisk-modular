@@ -29,7 +29,7 @@ module.exports = {
 
 		return jsonRefs
 			.resolveRefs(Object.assign({}, ConfigSchema), {})
-			.then(results => {
+			.then((results) => {
 				resolvedRefsSpec = results.resolved;
 			});
 	},

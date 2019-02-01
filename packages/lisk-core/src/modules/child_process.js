@@ -38,7 +38,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 		this.rpcClient = null;
 
 		// Receive message from child process and send to bus
-		this.childProcess.on('message', eventData => {
+		this.childProcess.on('message', (eventData) => {
 			const event = Event.deserialize(eventData);
 			this.bus.emit(event.key(), event.serialize());
 		});
@@ -49,7 +49,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 		});
 
 		return (
-			new Promise(resolve => {
+			new Promise((resolve) => {
 				this.bus.once(`${this.alias}:loading:finished`, () => {
 					// Create socket for module
 					this.rpcSocket = axon.socket('req');
@@ -75,7 +75,7 @@ module.exports = class ChildProcessModule extends BaseModule {
 	async unload() {
 		this.childProcess.kill('SIGINT');
 
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			this.bus.once(`${this.alias}:unloading:finished`, () =>
 				setImmediate(resolve),
 			);

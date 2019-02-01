@@ -16,7 +16,7 @@ describe('Command Line Tool', () => {
 	let proc;
 	let output;
 
-	beforeAll(done => {
+	beforeAll((done) => {
 		// Arrange && Act
 		output = '';
 		proc = spawn(bin, ['non-existent']); // Act
